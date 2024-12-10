@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hungry/views/screens/bookmarks_page.dart';
-import 'package:hungry/views/screens/explore_page.dart';
 import 'package:hungry/views/screens/home_page.dart';
 import 'package:hungry/views/utils/AppColor.dart';
 import 'package:hungry/views/widgets/custom_bottom_navigation_bar.dart';
@@ -27,7 +26,6 @@ class _PageSwitcherState extends State<PageSwitcher> {
         children: [
           [
             HomePage(),
-            ExplorePage(),
             BookmarksPage(),
           ][_selectedIndex],
           BottomGradientWidget(),

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hungry/models/core/recipe.dart';
-import 'package:hungry/models/helper/recipe_helper.dart';
-import 'package:hungry/views/utils/AppColor.dart';
-import 'package:hungry/views/widgets/modals/search_filter_modal.dart';
-import 'package:hungry/views/widgets/recipe_tile.dart';
-import 'package:flutter/services.dart';
+import 'package:hungry/models/helper/pesanan_helper.dart';
+import 'package:hungry/models/core/pesanan.dart';
+import 'package:hungry/views/widgets/custom_app_bar.dart';
+import 'package:hungry/views/screens/profile_page.dart';
 
 class BookmarksPage extends StatefulWidget {
   @override
@@ -13,125 +10,121 @@ class BookmarksPage extends StatefulWidget {
 }
 
 class _BookmarksPageState extends State<BookmarksPage> {
-  TextEditingController searchInputController = TextEditingController();
-  List<Recipe> bookmarkedRecipe = RecipeHelper.bookmarkedRecipe;
+  List<Order> orders = OrderHelper.contohOrder();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle.light, // This replaces brightness: Brightness.dark
-        backgroundColor: AppColor.primary,
-        centerTitle: false,
-        elevation: 0,
-        title: Text(
-          'Bookmarks',
-          style: TextStyle(
-            fontFamily: 'inter',
-            fontWeight: FontWeight.w400,
-            fontSize: 16,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(70),
+        child: CustomAppBar(
+          title: Text(
+            'QuickDine',
+            style: TextStyle(color: Colors.white, fontFamily: 'inter', fontWeight: FontWeight.w700),
           ),
+          showProfilePhoto: true,
+          profilePhoto: AssetImage('assets/images/profile.jfif'),
+          profilePhotoOnPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProfilePage()));
+          },
         ),
       ),
-      body: ListView(
-        shrinkWrap: true,
-        physics: BouncingScrollPhysics(),
+      body: Column(
         children: [
-          // Section 1 - Search Bar
+          // Section Header: Pesanan
           Container(
-            width: MediaQuery.of(context).size.width,
-            height: 95,
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            color: AppColor.primary,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Search Bar
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Search TextField
-                    Expanded(
-                      child: Container(
-                        height: 50,
-                        margin: EdgeInsets.only(right: 15),
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppColor.primarySoft),
-                        child: TextField(
-                          controller: searchInputController,
-                          onChanged: (value) {
-                            print(searchInputController.text);
-                            setState(() {});
-                          },
-                          style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),
-                          maxLines: 1,
-                          textInputAction: TextInputAction.search,
-                          decoration: InputDecoration(
-                            hintText: 'What do you want to eat?',
-                            hintStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
-                            prefixIconConstraints: BoxConstraints(maxHeight: 20),
-                            contentPadding: EdgeInsets.symmetric(horizontal: 17),
-                            focusedBorder: InputBorder.none,
-                            border: InputBorder.none,
-                            prefixIcon: Visibility(
-                              visible: (searchInputController.text.isEmpty) ? true : false,
-                              child: Container(
-                                margin: EdgeInsets.only(left: 10, right: 12),
-                                child: SvgPicture.asset(
-                                  'assets/icons/search.svg',
-                                  width: 20,
-                                  height: 20,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    // Filter Button
-                    GestureDetector(
-                      onTap: () {
-                        showModalBottomSheet(
-                            context: context,
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-                            builder: (context) {
-                              return SearchFilterModal();
-                            });
-                      },
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: AppColor.secondary,
-                        ),
-                        child: SvgPicture.asset('assets/icons/filter.svg'),
-                      ),
-                    )
-                  ],
-                ),
-              ],
+            color: Colors.white,
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            child: Text(
+              'Pesanan',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'inter',
+              ),
             ),
           ),
-          // Section 2 - Bookmarked Recipe
-          Container(
-            padding: EdgeInsets.all(16),
-            width: MediaQuery.of(context).size.width,
-            child: ListView.separated(
-              shrinkWrap: true,
-              itemCount: bookmarkedRecipe.length,
-              physics: NeverScrollableScrollPhysics(),
-              separatorBuilder: (context, index) {
-                return SizedBox(height: 16);
-              },
-              itemBuilder: (context, index) {
-                return RecipeTile(
-                  data: bookmarkedRecipe[index],
-                );
-              },
+          // List of Orders
+          Expanded(
+            child: Container(
+              color: Colors.white,
+              child: ListView.separated(
+                itemCount: orders.length,
+                padding: EdgeInsets.all(16),
+                separatorBuilder: (context, index) => SizedBox(height: 16),
+                itemBuilder: (context, index) {
+                  final order = orders[index];
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 8,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Product Name and Status
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              order.produk,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                fontFamily: 'inter',
+                              ),
+                            ),
+                            Text(
+                              order.status == 'completed' ? 'Selesai' : 'Pending',
+                              style: TextStyle(
+                                color: order.status == 'completed' ? Colors.green : Colors.orange,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8),
+                        // Order Details
+                        Text(
+                          'Jumlah: ${order.jumlah}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: 'inter',
+                          ),
+                        ),
+                        Text(
+                          'Catatan: ${order.catatan}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: 'inter',
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        // Transaction ID
+                        Text(
+                          'ID Transaksi: ${order.idTransaksi}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontFamily: 'inter',
+                            color: Colors.grey[500],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ],
