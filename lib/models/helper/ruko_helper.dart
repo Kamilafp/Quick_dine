@@ -41,14 +41,14 @@ class RukoHelper {
         'namaRuko': 'Ruko Serba Ada',
         'metodePembayaran': 'Tunai, Kartu Kredit',
         'noTelp': '081234567890',
-        'gambarRuko': 'assets/images/restaurant1.jfif'
+        'gambarRuko': 'assets/images/kantin2.png'
       },
       {
         'id': '2',
         'namaRuko': 'Ruko Sinar Jaya',
         'metodePembayaran': 'Tunai, Transfer Bank',
         'noTelp': '082345678901',
-        'gambarRuko': 'assets/images/restaurant2.jfif',
+        'gambarRuko': 'assets/images/kantin2.png',
       },
     ];
 
