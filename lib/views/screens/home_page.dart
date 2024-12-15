@@ -45,7 +45,7 @@ class HomePage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Ruko',
+                        'Kantin Fakultas Teknik Unsoed',
                         style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'inter'),
                       ),
                       TextButton(
