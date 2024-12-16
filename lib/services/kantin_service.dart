@@ -133,3 +133,29 @@ Future<List<dynamic>> fetchUsers() async {
     throw Exception('Failed to load users');
   }
 }
+
+Future<void> fetchKantins() async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token=await getToken();
+    final response = await http.get(Uri.parse(kantinURL),
+        headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'});
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = Kantin.fromJson(jsonDecode(response.body));
+        break;
+      case 422:
+        final errors = jsonDecode(response.body)['errors'];
+        apiResponse.error = errors[errors.keys.elementAt(0)[0]];
+        break;
+      case 403:
+        apiResponse.error = jsonDecode(response.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    apiResponse.error = serverError;
+  }
+}
