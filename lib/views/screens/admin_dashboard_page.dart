@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:quick_dine/constant.dart';
+import 'package:quick_dine/services/kantin_service.dart';
+import 'package:quick_dine/services/user_service.dart';
 import 'package:quick_dine/views/screens/admin_akun_page.dart';
 import 'package:quick_dine/views/screens/admin_kantin_page.dart';
 
@@ -10,8 +13,8 @@ class AdminDashboardPage extends StatefulWidget {
 }
 
 class _AdminDashboardPageState extends State<AdminDashboardPage> {
-  int totalUsers = 0;
-  int totalKantins = 0;
+  int totalUser = 0;
+  int totalKantin = 0;
   bool isLoading = true;
 
   @override
@@ -22,18 +25,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   Future<void> fetchDashboardData() async {
     try {
-      final usersResponse = await http.get(Uri.parse('http://localhost/api/users/count'));
-      final kantinsResponse = await http.get(Uri.parse('http://localhost/api/kantin/count'));
-
-      if (usersResponse.statusCode == 200 && kantinsResponse.statusCode == 200) {
-        setState(() {
-          totalUsers = json.decode(usersResponse.body)['count'];
-          totalKantins = json.decode(kantinsResponse.body)['count'];
-          isLoading = false;
-        });
-      } else {
-        throw Exception('Failed to fetch data');
-      }
+      totalUser = await getTotalUser();
+      totalKantin = await getTotalkantin();
+      setState(() {
+        isLoading=false;
+      });
     } catch (e) {
       print(e);
       setState(() {
@@ -108,7 +104,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                           ),
                           SizedBox(height: 8),
                           Text(
-                            totalUsers.toString(),
+                            totalUser.toString(),
                             style: TextStyle(fontSize: 24, color: Colors.green),
                           ),
                         ],
@@ -129,7 +125,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                           ),
                           SizedBox(height: 8),
                           Text(
-                            totalKantins.toString(),
+                            totalKantin.toString(),
                             style: TextStyle(fontSize: 24, color: Colors.green),
                           ),
                         ],
