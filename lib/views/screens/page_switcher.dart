@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quick_dine/views/screens/admin_dashboard_page.dart';
+import 'package:quick_dine/views/screens/auth/welcome_page.dart';
+import 'package:quick_dine/views/screens/bookmarks_page.dart';
 import 'package:quick_dine/views/screens/home_page.dart';
 import 'package:quick_dine/views/screens/karyawan_dashboard_page.dart';
 import 'package:quick_dine/views/utils/AppColor.dart';
@@ -36,9 +38,8 @@ class _PageSwitcherState extends State<PageSwitcher> {
       body: Stack(
         children: [
           [
-            AdminDashboardPage(),
             HomePage(),
-            KaryawanDashboardPage(),
+            BookmarksPage(),
           ][_selectedIndex],
           BottomGradientWidget(),
         ],

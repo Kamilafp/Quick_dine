@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:quick_dine/models/api_response.dart';
 import 'package:quick_dine/models/core/user.dart';
 import 'package:quick_dine/services/user_service.dart';
+import 'package:quick_dine/views/screens/admin_dashboard_page.dart';
+import 'package:quick_dine/views/screens/karyawan_dashboard_page.dart';
 import 'package:quick_dine/views/screens/page_switcher.dart';
 import 'package:quick_dine/views/utils/AppColor.dart';
 import 'package:quick_dine/views/widgets/custom_text_field.dart';
@@ -59,15 +61,15 @@ class _LoginModalState extends State<LoginModal> {
 
     if (user.role == 'admin') {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => PageSwitcher(initialPageIndex: 0),
+        builder: (context) => AdminDashboardPage(),
       ));
     } else if (user.role == 'mahasiswa') {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => PageSwitcher(initialPageIndex: 1),
+        builder: (context) => PageSwitcher(initialPageIndex: 0),
       ));
     } else if (user.role == 'karyawan') {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => PageSwitcher(initialPageIndex: 2),
+        builder: (context) => KaryawanDashboardPage(),
       ));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
