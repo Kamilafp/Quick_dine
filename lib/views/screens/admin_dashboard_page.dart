@@ -82,7 +82,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               leading: Icon(Icons.store),
               title: Text('Kantin'),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AdminKantinPage()));
+                // Navigator.push(context, MaterialPageRoute(builder: (context) => AdminKantinPage()));
               },
             ),
           ],
