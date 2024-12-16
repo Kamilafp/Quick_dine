@@ -34,6 +34,9 @@ class _LoginModalState extends State<LoginModal> {
   }
 
   void _loginUser() async{
+    setState((){
+      loading=true;
+    });
     ApiResponse response=await login( emailController.text, passwordController.text);
     if(response.error==null){
       _saveAndRedirectToHome(response.data as User);

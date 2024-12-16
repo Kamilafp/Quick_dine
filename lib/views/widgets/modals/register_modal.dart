@@ -72,6 +72,9 @@ class _RegisterModalState extends State<RegisterModal>{
   }
 
   void _registerUser() async{
+    setState((){
+      loading=true;
+    });
     ApiResponse response=await register(
       namaController.text,
     emailController.text,
