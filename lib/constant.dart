@@ -6,6 +6,7 @@ const userURL=baseURL+'/users';
 const kantinURL=baseURL+'/kantin';
 const menuURL=baseURL+'/menu';
 const pesananURL=baseURL+'/pesanan';
+const detailPesananURL=baseURL+'/detailPesanan';
 
 const serverError='Server error';
 const unauthorized='Unauthorized';
