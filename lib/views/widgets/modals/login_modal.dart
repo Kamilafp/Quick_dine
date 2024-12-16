@@ -16,73 +16,79 @@ class _LoginModalState extends State<LoginModal> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  bool loading=false;
-  bool hasError=false;
-  bool validate(){
-    setState((){
+  bool loading = false;
+  bool hasError = false;
+  bool validate() {
+    setState(() {
       _validate();
     });
     return !hasError;
   }
 
-  void _validate(){
-    if(emailController.text.isEmpty || passwordController.text.isEmpty){
-      hasError=true;
-    }else{
-      hasError=false;
+  void _validate() {
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      hasError = true;
+    } else {
+      hasError = false;
     }
   }
 
-  void _loginUser() async{
-    setState((){
-      loading=true;
+  void _loginUser() async {
+    setState(() {
+      loading = true;
     });
-    ApiResponse response=await login( emailController.text, passwordController.text);
-    if(response.error==null){
+    ApiResponse response =
+        await login(emailController.text, passwordController.text);
+    if (response.error == null) {
       _saveAndRedirectToHome(response.data as User);
-    }else{
+    } else {
       setState(() {
-        loading=false;
+        loading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${response.error}'),));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('${response.error}'),
+      ));
     }
   }
 
-  void _saveAndRedirectToHome(User user) async{
-    SharedPreferences pref=await SharedPreferences.getInstance();
-    await pref.setString('token', user.token??'');
-    await pref.setInt('idUser', user.id??0);
+  void _saveAndRedirectToHome(User user) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setString('token', user.token ?? '');
+    await pref.setInt('idUser', user.id ?? 0);
     await pref.setString('role', user.role ?? '');
-    
-    int initialPageIndex=0;
-    if(user.role=='admin'){
-      initialPageIndex=0;
-    }else if(user.role=='mahasiswa'){
-      initialPageIndex=1;
-    }else if(user.role=='karyawan'){
-      initialPageIndex=2;
-    }else{
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Belum ada role ini'),));
-      return;
-    }//hapus aja kali ya, soalnya cuma 3 role
-    Navigator.of(context).pop();
-  Navigator.of(context).pushReplacement(
-    MaterialPageRoute(
-      builder: (context) => PageSwitcher(initialPageIndex: initialPageIndex),
-    ),
-  );
-      }
 
-      void onSubmit(){
-        if(validate()){
-          _loginUser();
-        }else{
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Email dan password harus diisi'),
-            behavior: SnackBarBehavior.floating,  // Menempatkan SnackBar di atas
-    margin: EdgeInsets.only(top: 20),));
-        }
-      }
+    if (user.role == 'admin') {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => PageSwitcher(initialPageIndex: 0),
+      ));
+    } else if (user.role == 'mahasiswa') {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => PageSwitcher(initialPageIndex: 1),
+      ));
+    } else if (user.role == 'karyawan') {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => PageSwitcher(initialPageIndex: 2),
+      ));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Belum ada role ini'),
+      ));
+      return;
+    } //hapus aja kali ya, soalnya cuma 3 role
+  }
+
+  void onSubmit() {
+    if (validate()) {
+      _loginUser();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Email dan password harus diisi'),
+        behavior: SnackBarBehavior.floating, // Menempatkan SnackBar di atas
+        margin: EdgeInsets.only(top: 20),
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Wrap(
@@ -91,10 +97,14 @@ class _LoginModalState extends State<LoginModal> {
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height * 85 / 100,
           padding: EdgeInsets.only(left: 16, right: 16, bottom: 32, top: 16),
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20), topRight: Radius.circular(20))),
           child: ListView(
             shrinkWrap: true,
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
             physics: BouncingScrollPhysics(),
             children: [
               Align(
@@ -103,7 +113,9 @@ class _LoginModalState extends State<LoginModal> {
                   width: MediaQuery.of(context).size.width * 35 / 100,
                   margin: EdgeInsets.only(bottom: 20),
                   height: 6,
-                  decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(20)),
+                  decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(20)),
                 ),
               ),
               // header
@@ -111,32 +123,42 @@ class _LoginModalState extends State<LoginModal> {
                 margin: EdgeInsets.only(bottom: 24),
                 child: Text(
                   'Login',
-                  style: TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.w700, fontFamily: 'inter'),
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'inter'),
                 ),
               ),
               // Form
               CustomTextField(
-                title: 'Email',
-                hint: 'youremail@email.com',
-                controller: emailController
-              ),
+                  title: 'Email',
+                  hint: 'youremail@email.com',
+                  controller: emailController),
               CustomTextField(
-                title: 'Password',
-                hint: '**********',
-                obsecureText: true,
-                controller: passwordController,
-                margin: EdgeInsets.only(top: 16)),
+                  title: 'Password',
+                  hint: '**********',
+                  obsecureText: true,
+                  controller: passwordController,
+                  margin: EdgeInsets.only(top: 16)),
               // Log in Button
               Container(
                 margin: EdgeInsets.only(top: 32, bottom: 6),
                 width: MediaQuery.of(context).size.width,
                 height: 60,
                 child: ElevatedButton(
-                  onPressed: loading? null : onSubmit,
-                  child: loading ?
-                  CircularProgressIndicator(color: Colors.green): Text('Login', style: TextStyle(color: AppColor.secondary, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'inter')),
+                  onPressed: loading ? null : onSubmit,
+                  child: loading
+                      ? CircularProgressIndicator(color: Colors.green)
+                      : Text('Login',
+                          style: TextStyle(
+                              color: AppColor.secondary,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'inter')),
                   style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
                     backgroundColor: AppColor.primarySoft,
                   ),
                 ),

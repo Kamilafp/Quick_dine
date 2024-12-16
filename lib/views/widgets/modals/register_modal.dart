@@ -9,119 +9,129 @@ import 'package:quick_dine/views/widgets/modals/login_modal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterModal extends StatefulWidget {
-  _RegisterModalState createState()=>_RegisterModalState();
+  _RegisterModalState createState() => _RegisterModalState();
 }
 
-class _RegisterModalState extends State<RegisterModal>{
-  final TextEditingController
-  emailController = TextEditingController(),passwordController = TextEditingController(),
-  passwordConfirmController = TextEditingController(),
-  notelpController = TextEditingController(),
-  namaController = TextEditingController();
+class _RegisterModalState extends State<RegisterModal> {
+  final TextEditingController emailController = TextEditingController(),
+      passwordController = TextEditingController(),
+      passwordConfirmController = TextEditingController(),
+      notelpController = TextEditingController(),
+      namaController = TextEditingController();
 
-  bool loading=false;
-  bool hasError=false;
+  bool loading = false;
+  bool hasError = false;
 
   String? harusIsi;
   String? passwordMin;
   String? passwordMatch;
 
-  bool validate(){
-    setState((){
-      harusIsi=null;
-      passwordMin=null;
-      passwordMatch=null;
-      hasError=false;
+  bool validate() {
+    setState(() {
+      harusIsi = null;
+      passwordMin = null;
+      passwordMatch = null;
+      hasError = false;
 
-      if(emailController.text.isEmpty || passwordController.text.isEmpty ||notelpController.text.isEmpty || namaController.text.isEmpty || passwordConfirmController.text.isEmpty){
-      harusIsi='Semua field harus diisi';
-      hasError=true;
-    }if(passwordController.text.length<6){
-      passwordMin='Password minimal 6 karakter';
-      hasError=true;
+      if (emailController.text.isEmpty ||
+          passwordController.text.isEmpty ||
+          notelpController.text.isEmpty ||
+          namaController.text.isEmpty ||
+          passwordConfirmController.text.isEmpty) {
+        harusIsi = 'Semua field harus diisi';
+        hasError = true;
+      }
+      if (passwordController.text.length < 6) {
+        passwordMin = 'Password minimal 6 karakter';
+        hasError = true;
       }
       if (hasError) {
-      String errorMsg = harusIsi ?? passwordMin ?? passwordMatch ?? '';
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMsg),
-          backgroundColor: Colors.orange,
-          behavior: SnackBarBehavior.floating,  // Menempatkan SnackBar di atas
-    margin: EdgeInsets.only(top: 20),
-        ),
-      );
+        String errorMsg = harusIsi ?? passwordMin ?? passwordMatch ?? '';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMsg),
+            backgroundColor: Colors.orange,
+            behavior: SnackBarBehavior.floating, // Menempatkan SnackBar di atas
+            margin: EdgeInsets.only(top: 20),
+          ),
+        );
+      } else {
+        hasError = false;
       }
-      else{
-      hasError=false;
-    }
     });
     return !hasError;
   }
 
-  void _validate(){
-    if(emailController.text.isEmpty || passwordController.text.isEmpty){
-      hasError=true;
-    }if(passwordController.text.length<6){
-      hasError=true;
-      }
-      if(passwordController.text!=passwordConfirmController.text){
-        passwordMatch='Password harus sama';
-        }else{
-      hasError=false;
+  void _validate() {
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      hasError = true;
+    }
+    if (passwordController.text.length < 6) {
+      hasError = true;
+    }
+    if (passwordController.text != passwordConfirmController.text) {
+      passwordMatch = 'Password harus sama';
+    } else {
+      hasError = false;
     }
   }
 
-  void _registerUser() async{
-    setState((){
-      loading=true;
+  void _registerUser() async {
+    setState(() {
+      loading = true;
     });
-    ApiResponse response=await register(
-      namaController.text,
-    emailController.text,
-    passwordController.text,
-    notelpController.text, 'mahasiswa');
-    if(response.error==null){
+    ApiResponse response = await register(
+        namaController.text,
+        emailController.text,
+        passwordController.text,
+        notelpController.text,
+        'mahasiswa');
+    if (response.error == null) {
       _saveAndRedirectToHome(response.data as User);
-    }else{
+    } else {
       setState(() {
-        loading=false;
+        loading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${response.error}'),));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('${response.error}'),
+      ));
     }
   }
 
-  void _saveAndRedirectToHome(User user) async{
-    SharedPreferences pref=await SharedPreferences.getInstance();
-    await pref.setString('token', user.token??'');
-    await pref.setInt('idUser', user.id??0);
+  void _saveAndRedirectToHome(User user) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setString('token', user.token ?? '');
+    await pref.setInt('idUser', user.id ?? 0);
     await pref.setString('role', user.role ?? '');
-    
-    int initialPageIndex=0;
-    if(user.role=='admin'){
-      initialPageIndex=0;
-    }else if(user.role=='mahasiswa'){
-      initialPageIndex=1;
-    }else if(user.role=='karyawan'){
-      initialPageIndex=2;
-    }else{
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Belum ada role ini'),));
-      return;
-    }//hapus aja kali ya, soalnya cuma 3 role
-    Navigator.of(context).pop();
-  Navigator.of(context).pushReplacement(
-    MaterialPageRoute(
-      builder: (context) => PageSwitcher(initialPageIndex: initialPageIndex),
-    ),
-  );
-      }
 
-      void onSubmit(){
-        if(validate()){
-          _registerUser();
-        }else{
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Email dan password harus diisi')));
-        }
-      }
+    if (user.role == 'admin') {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => PageSwitcher(initialPageIndex: 0),
+      ));
+    } else if (user.role == 'mahasiswa') {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => PageSwitcher(initialPageIndex: 1),
+      ));
+    } else if (user.role == 'karyawan') {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => PageSwitcher(initialPageIndex: 2),
+      ));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Belum ada role ini'),
+      ));
+      return;
+    } //hapus aja kali ya, soalnya cuma 3 role
+  }
+
+  void onSubmit() {
+    if (validate()) {
+      _registerUser();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Email dan password harus diisi')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,10 +141,14 @@ class _RegisterModalState extends State<RegisterModal>{
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height * 85 / 100,
           padding: EdgeInsets.only(left: 16, right: 16, bottom: 32, top: 16),
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20), topRight: Radius.circular(20))),
           child: ListView(
             shrinkWrap: true,
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
             physics: BouncingScrollPhysics(),
             children: [
               Align(
@@ -143,7 +157,9 @@ class _RegisterModalState extends State<RegisterModal>{
                   width: MediaQuery.of(context).size.width * 35 / 100,
                   margin: EdgeInsets.only(bottom: 20),
                   height: 6,
-                  decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(20)),
+                  decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(20)),
                 ),
               ),
               // header
@@ -151,32 +167,57 @@ class _RegisterModalState extends State<RegisterModal>{
                 margin: EdgeInsets.only(bottom: 24),
                 child: Text(
                   'Get Started',
-                  style: TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.w700, fontFamily: 'inter'),
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'inter'),
                 ),
               ),
               // Form
-              CustomTextField(title: 'Email', hint: 'emailanda@email.com',
-              controller: emailController),
-              CustomTextField(title: 'Nama Lengkap', hint: 'Nama Lengkap Anda', 
-              controller: namaController,margin: EdgeInsets.only(top: 16)),
-              CustomTextField(title: 'Password', hint: '**********', obsecureText: true,
-              controller: passwordController,
-              margin: EdgeInsets.only(top: 16)),
-              CustomTextField(title: 'Konfirmasi Password', hint: '**********', obsecureText: true,
-              controller: passwordConfirmController, margin: EdgeInsets.only(top: 16)),
-              CustomTextField(title: 'Nomor Telepon', hint: '081234567891',
-              controller: notelpController),
+              CustomTextField(
+                  title: 'Email',
+                  hint: 'emailanda@email.com',
+                  controller: emailController),
+              CustomTextField(
+                  title: 'Nama Lengkap',
+                  hint: 'Nama Lengkap Anda',
+                  controller: namaController,
+                  margin: EdgeInsets.only(top: 16)),
+              CustomTextField(
+                  title: 'Password',
+                  hint: '**********',
+                  obsecureText: true,
+                  controller: passwordController,
+                  margin: EdgeInsets.only(top: 16)),
+              CustomTextField(
+                  title: 'Konfirmasi Password',
+                  hint: '**********',
+                  obsecureText: true,
+                  controller: passwordConfirmController,
+                  margin: EdgeInsets.only(top: 16)),
+              CustomTextField(
+                  title: 'Nomor Telepon',
+                  hint: '081234567891',
+                  controller: notelpController),
               // Register Button
               Container(
                 margin: EdgeInsets.only(top: 32, bottom: 6),
                 width: MediaQuery.of(context).size.width,
                 height: 60,
                 child: ElevatedButton(
-                  onPressed: loading? null : onSubmit,
-                  child: loading ?
-                  CircularProgressIndicator(color: Colors.green): Text('Register', style: TextStyle(color: AppColor.secondary, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'inter')),
+                  onPressed: loading ? null : onSubmit,
+                  child: loading
+                      ? CircularProgressIndicator(color: Colors.green)
+                      : Text('Register',
+                          style: TextStyle(
+                              color: AppColor.secondary,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'inter')),
                   style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
                     backgroundColor: AppColor.primarySoft,
                   ),
                 ),
@@ -188,7 +229,10 @@ class _RegisterModalState extends State<RegisterModal>{
                   showModalBottomSheet(
                     context: context,
                     backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20))),
                     isScrollControlled: true,
                     builder: (context) {
                       return LoginModal();
