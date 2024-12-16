@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hungry/models/core/ruko.dart'; // Pastikan Ruko class diimport dengan benar
+import 'package:quick_dine/models/core/ruko.dart'; // Pastikan Ruko class diimport dengan benar
 
 class RukoDetailPage extends StatefulWidget {
   final Ruko data;

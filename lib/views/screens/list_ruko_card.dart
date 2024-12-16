@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hungry/models/core/ruko.dart';
+import 'package:quick_dine/models/core/ruko.dart';
 
 class ListRukoCard extends StatelessWidget {
   final Ruko data; // Data ruko yang akan ditampilkan

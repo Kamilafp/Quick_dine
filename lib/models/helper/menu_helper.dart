@@ -1,4 +1,6 @@
-import 'package:hungry/models/core/menu.dart'; // Asumsikan ini adalah file Menu sebelumnya
+
+
+import 'package:quick_dine/models/core/menu.dart';
 
 class MenuHelper {
   // Metode untuk mengonversi JSON ke objek Menu

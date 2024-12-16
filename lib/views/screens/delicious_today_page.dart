@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:hungry/models/core/recipe.dart';
-import 'package:hungry/models/helper/recipe_helper.dart';
-import 'package:hungry/views/utils/AppColor.dart';
-import 'package:hungry/views/widgets/popular_recipe_card.dart';
-import 'package:hungry/views/widgets/recipe_tile.dart';
-import 'package:hungry/models/core/menu.dart';
-import 'package:hungry/views/widgets/menu_card.dart';
-import 'package:hungry/models/helper/menu_helper.dart'; // Menambahkan helper menu
+import 'package:quick_dine/models/core/recipe.dart';
+import 'package:quick_dine/models/helper/recipe_helper.dart';
+import 'package:quick_dine/views/utils/AppColor.dart';
+import 'package:quick_dine/views/widgets/popular_recipe_card.dart';
+import 'package:quick_dine/views/widgets/recipe_tile.dart';
+import 'package:quick_dine/models/core/menu.dart';
+import 'package:quick_dine/views/widgets/menu_card.dart';
+import 'package:quick_dine/models/helper/menu_helper.dart'; // Menambahkan helper menu
 
 class DeliciousTodayPage extends StatelessWidget {
   // final Recipe popularRecipe = RecipeHelper.popularRecipe;

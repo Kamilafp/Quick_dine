@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hungry/views/utils/AppColor.dart';
+import 'package:quick_dine/views/utils/AppColor.dart';
 
 class SearchFilterModal extends StatelessWidget {
   @override

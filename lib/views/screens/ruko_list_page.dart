@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hungry/models/core/ruko.dart';
-import 'package:hungry/models/helper/ruko_helper.dart'; // Helper untuk mendapatkan data ruko
-import 'package:hungry/views/screens//list_ruko_card.dart'; // Widget untuk menampilkan kartu ruko
+import 'package:quick_dine/models/core/ruko.dart';
+import 'package:quick_dine/models/helper/ruko_helper.dart'; // Helper untuk mendapatkan data ruko
+import 'package:quick_dine/views/screens//list_ruko_card.dart'; // Widget untuk menampilkan kartu ruko
 
 class RukoListPage extends StatelessWidget {
   @override

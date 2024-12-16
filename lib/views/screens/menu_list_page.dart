@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hungry/models/core/menu.dart';
-import 'package:hungry/models/helper/menu_helper.dart';
-import 'package:hungry/views/widgets/featured_menu_card.dart';
+import 'package:quick_dine/models/core/menu.dart';
+import 'package:quick_dine/models/helper/menu_helper.dart';
+import 'package:quick_dine/views/widgets/featured_menu_card.dart';
 
 class MenuListPage extends StatefulWidget {
   final String idRuko;

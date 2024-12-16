@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hungry/views/utils/AppColor.dart';
-import 'package:hungry/views/widgets/modals/login_modal.dart';
-import 'package:hungry/views/widgets/modals/register_modal.dart';
+import 'package:quick_dine/views/utils/AppColor.dart';
+import 'package:quick_dine/views/widgets/modals/login_modal.dart';
+import 'package:quick_dine/views/widgets/modals/register_modal.dart';
 
 class WelcomePage extends StatelessWidget {
   @override

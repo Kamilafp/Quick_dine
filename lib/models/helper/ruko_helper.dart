@@ -1,4 +1,4 @@
-import 'package:hungry/models/core/ruko.dart';
+import 'package:quick_dine/models/core/ruko.dart';
 
 class RukoHelper {
   // Metode untuk mengonversi JSON ke objek Ruko

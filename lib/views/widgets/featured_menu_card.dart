@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hungry/models/core/menu.dart';
+import 'package:quick_dine/models/core/menu.dart';
 
 class FeaturedMenuCard extends StatefulWidget {
   final Menu data;

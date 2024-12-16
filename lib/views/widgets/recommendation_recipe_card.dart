@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hungry/models/core/recipe.dart';
-import 'package:hungry/views/screens/recipe_detail_page.dart';
+import 'package:quick_dine/models/core/recipe.dart';
+import 'package:quick_dine/views/screens/recipe_detail_page.dart';
 
 class RecommendationRecipeCard extends StatelessWidget {
   final Recipe data;

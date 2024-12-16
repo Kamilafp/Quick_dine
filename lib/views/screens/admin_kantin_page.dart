@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:hungry/views/screens/admin_akun_page.dart';
-import 'package:hungry/views/screens/admin_dashboard_page.dart';
+import 'package:quick_dine/views/screens/admin_akun_page.dart';
+import 'package:quick_dine/views/screens/admin_dashboard_page.dart';
+import 'package:quick_dine/constant.dart';
 
 class AdminKantinPage extends StatefulWidget {
   @override
@@ -11,6 +12,8 @@ class AdminKantinPage extends StatefulWidget {
 
 class _AdminKantinPageState extends State<AdminKantinPage> {
   List<Map<String, dynamic>> kantins = [];
+  
+  
   bool isLoading = true;
 
   @override
@@ -21,7 +24,7 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
 
   Future<void> fetchKantins() async {
     try {
-      final response = await http.get(Uri.parse('http://127.0.0.1:8000/api/kantin'));
+      final response = await http.get(Uri.parse(kantinURL));
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as List;
         setState(() {
@@ -39,12 +42,12 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
     }
   }
 
-  Future<void> addKantin(String nama, int idKaryawan) async {
+  Future<void> addKantin(String namaKantin, int idKaryawan) async {
     try {
       final response = await http.post(
-        Uri.parse('http://127.0.0.1:8000/api/kantin'),
+        Uri.parse(kantinURL),
         body: json.encode({
-          'nama_kantin': nama,
+          'nama_kantin': namaKantin,
           'id_karyawan': idKaryawan,
         }),
         headers: {'Content-Type': 'application/json'},
@@ -59,12 +62,12 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
     }
   }
 
-  Future<void> editKantin(int id, String nama, int idKaryawan) async {
+  Future<void> editKantin(int id, String namaKantin, int idKaryawan) async {
     try {
       final response = await http.put(
-        Uri.parse('http://127.0.0.1:8000/api/kantin/$id'),
+        Uri.parse('$kantinURL/$id'),
         body: json.encode({
-          'nama_kantin': nama,
+          'nama_kantin': namaKantin,
           'id_karyawan': idKaryawan,
         }),
         headers: {'Content-Type': 'application/json'},
@@ -81,7 +84,7 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
 
   Future<void> deleteKantin(int id) async {
     try {
-      final response = await http.delete(Uri.parse('http://127.0.0.1:8000/api/kantin/$id'));
+      final response = await http.delete(Uri.parse('$kantinURL/$id'));
       if (response.statusCode == 200) {
         fetchKantins();
       } else {
@@ -93,7 +96,7 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
   }
 
   void showAddModal() {
-    final _namaController = TextEditingController();
+    final _namaKantinController = TextEditingController();
     final _idKaryawanController = TextEditingController();
 
     showDialog(
@@ -104,7 +107,7 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
-              controller: _namaController,
+              controller: _namaKantinController,
               decoration: InputDecoration(labelText: 'Nama Kantin'),
             ),
             TextField(
@@ -122,7 +125,7 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
           ElevatedButton(
             onPressed: () {
               addKantin(
-                _namaController.text,
+                _namaKantinController.text,
                 int.parse(_idKaryawanController.text),
               );
               Navigator.pop(context);
@@ -135,7 +138,7 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
   }
 
   void showEditModal(Map<String, dynamic> kantin) {
-    final _namaController = TextEditingController(text: kantin['nama_kantin']);
+    final _namaKantinController = TextEditingController(text: kantin['nama_kantin']);
     final _idKaryawanController = TextEditingController(text: kantin['id_karyawan'].toString());
 
     showDialog(
@@ -146,7 +149,7 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
-              controller: _namaController,
+              controller: _namaKantinController,
               decoration: InputDecoration(labelText: 'Nama Kantin'),
             ),
             TextField(
@@ -165,7 +168,7 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
             onPressed: () {
               editKantin(
                 kantin['id'],
-                _namaController.text,
+                _namaKantinController.text,
                 int.parse(_idKaryawanController.text),
               );
               Navigator.pop(context);

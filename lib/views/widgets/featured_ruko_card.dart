@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:hungry/views/screens/menu_list_page.dart'; // Import halaman MenuListPage
-import 'package:hungry/models/core/ruko.dart'; // Model Ruko
+import 'package:quick_dine/views/screens/menu_list_page.dart'; // Import halaman MenuListPage
+import 'package:quick_dine/models/core/ruko.dart'; // Model Ruko
 
 class FeaturedRukoCard extends StatelessWidget {
   final Ruko data; // Data ruko yang akan ditampilkan

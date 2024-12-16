@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hungry/models/core/menu.dart';
+import 'package:quick_dine/models/core/menu.dart';
 
 class MenuDetailPage extends StatefulWidget {
   final Menu data;

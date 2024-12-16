@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:hungry/views/utils/AppColor.dart';
+import 'package:quick_dine/services/user_service.dart';
+import 'package:quick_dine/views/screens/auth/welcome_page.dart';
+import 'package:quick_dine/views/utils/AppColor.dart';
 import 'package:flutter/services.dart';
+import 'package:quick_dine/views/widgets/modals/login_modal.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget title;
@@ -21,6 +24,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: title,
       elevation: 0,
       actions: [
+        IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () {
+              logout().then((value) => {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => WelcomePage()),
+                        (route) => false)
+                  });
+            },
+          ),
         Visibility(
           visible: showProfilePhoto,
           child: Container(

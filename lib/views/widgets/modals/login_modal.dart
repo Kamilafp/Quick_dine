@@ -1,9 +1,85 @@
 import 'package:flutter/material.dart';
-import 'package:hungry/views/screens/page_switcher.dart';
-import 'package:hungry/views/utils/AppColor.dart';
-import 'package:hungry/views/widgets/custom_text_field.dart';
+import 'package:quick_dine/models/api_response.dart';
+import 'package:quick_dine/models/core/user.dart';
+import 'package:quick_dine/services/user_service.dart';
+import 'package:quick_dine/views/screens/page_switcher.dart';
+import 'package:quick_dine/views/utils/AppColor.dart';
+import 'package:quick_dine/views/widgets/custom_text_field.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginModal extends StatelessWidget {
+class LoginModal extends StatefulWidget {
+  @override
+  _LoginModalState createState() => _LoginModalState();
+}
+
+class _LoginModalState extends State<LoginModal> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  bool loading=false;
+  bool hasError=false;
+  bool validate(){
+    setState((){
+      _validate();
+    });
+    return !hasError;
+  }
+
+  void _validate(){
+    if(emailController.text.isEmpty || passwordController.text.isEmpty){
+      hasError=true;
+    }else{
+      hasError=false;
+    }
+  }
+
+  void _loginUser() async{
+    ApiResponse response=await login( emailController.text, passwordController.text);
+    if(response.error==null){
+      _saveAndRedirectToHome(response.data as User);
+    }else{
+      setState(() {
+        loading=false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${response.error}'),));
+    }
+  }
+
+  void _saveAndRedirectToHome(User user) async{
+    SharedPreferences pref=await SharedPreferences.getInstance();
+    await pref.setString('token', user.token??'');
+    await pref.setInt('idUser', user.id??0);
+    await pref.setString('role', user.role ?? '');
+    
+    int initialPageIndex=0;
+    if(user.role=='admin'){
+      initialPageIndex=0;
+    }else if(user.role=='mahasiswa'){
+      initialPageIndex=1;
+    }else if(user.role=='karyawan'){
+      initialPageIndex=2;
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Belum ada role ini'),));
+      return;
+    }//hapus aja kali ya, soalnya cuma 3 role
+    Navigator.of(context).pop();
+  Navigator.of(context).pushReplacement(
+    MaterialPageRoute(
+      builder: (context) => PageSwitcher(initialPageIndex: initialPageIndex),
+    ),
+  );
+      }
+
+      void onSubmit(){
+        if(validate()){
+          _loginUser();
+        }else{
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Email dan password harus diisi'),
+            behavior: SnackBarBehavior.floating,  // Menempatkan SnackBar di atas
+    margin: EdgeInsets.only(top: 20),));
+        }
+      }
   @override
   Widget build(BuildContext context) {
     return Wrap(
@@ -36,19 +112,26 @@ class LoginModal extends StatelessWidget {
                 ),
               ),
               // Form
-              CustomTextField(title: 'Email', hint: 'youremail@email.com'),
-              CustomTextField(title: 'Password', hint: '**********', obsecureText: true, margin: EdgeInsets.only(top: 16)),
+              CustomTextField(
+                title: 'Email',
+                hint: 'youremail@email.com',
+                controller: emailController
+              ),
+              CustomTextField(
+                title: 'Password',
+                hint: '**********',
+                obsecureText: true,
+                controller: passwordController,
+                margin: EdgeInsets.only(top: 16)),
               // Log in Button
               Container(
                 margin: EdgeInsets.only(top: 32, bottom: 6),
                 width: MediaQuery.of(context).size.width,
                 height: 60,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => PageSwitcher()));
-                  },
-                  child: Text('Login', style: TextStyle(color: AppColor.secondary, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'inter')),
+                  onPressed: loading? null : onSubmit,
+                  child: loading ?
+                  CircularProgressIndicator(color: Colors.green): Text('Login', style: TextStyle(color: AppColor.secondary, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'inter')),
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     backgroundColor: AppColor.primarySoft,
