@@ -147,3 +147,17 @@ Future<ApiResponse> getAllUsers() async {
   }
   return apiResponse;
 }
+
+Future<int> getTotalUser() async{
+  String token = await getToken();
+    final response = await http.get(Uri.parse('$userURL/count'),
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token'
+    });
+    if(response.statusCode==200){
+      return json.decode(response.body)['total_user'];
+    }else{
+      throw Exception('Failed to load user count');
+    }
+}
