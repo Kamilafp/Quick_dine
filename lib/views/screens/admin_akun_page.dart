@@ -4,9 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:quick_dine/constant.dart';
 import 'package:quick_dine/models/api_response.dart';
 import 'package:quick_dine/services/user_service.dart';
-import 'package:quick_dine/views/screens/admin_kantin_page.dart';
 import 'package:quick_dine/views/screens/admin_dashboard_page.dart';
-import 'package:quick_dine/views/widgets/modals/login_modal.dart';
 
 class AdminAkunPage extends StatefulWidget {
   @override
@@ -17,15 +15,19 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
   List<Map<String, dynamic>> users = [];
   bool isLoading = true;
 
+  @override
+  void initState() {
+    super.initState();
+    fetchUsers();
+  }
 
   Future<void> fetchUsers() async {
     String token = await getToken();
     try {
-      final response = await http.get(Uri.parse('$baseURL/allUsers'),
-      headers: {
-      'Authorization': 'Bearer $token',
-      'Accept': 'application/json',
-    });
+      final response = await http.get(Uri.parse('$baseURL/allUsers'), headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      });
       if (response.statusCode == 200) {
         final data = json.decode(response.body)['users'] as List;
         setState(() {
@@ -53,9 +55,9 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
 
     List<String> roles = ['Mahasiswa', 'Karyawan', 'Admin'];
     String selectedRole = user['role'];
-    if (!roles.contains(selectedRole)) {
-    selectedRole = roles.first; // Fallback to the first role if not found
-  }
+    // if (!roles.contains(selectedRole)) {
+    //   selectedRole = roles.first; // Fallback to the first role if not found
+    // }
     showDialog(
       context: context,
       builder: (context) {
@@ -80,19 +82,19 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
                 enabled: false,
               ),
               SizedBox(height: 10),
-            DropdownButtonFormField<String>(
-              value: selectedRole,
-              items: roles.map((role) {
-                return DropdownMenuItem<String>(
-                  value: role,
-                  child: Text(role),
-                );
-              }).toList(),
-              onChanged: (value) {
-                selectedRole = value!;
-              },
-              decoration: InputDecoration(labelText: 'Role'),
-            ),
+              DropdownButtonFormField<String>(
+                value: selectedRole,
+                items: roles.map((role) {
+                  return DropdownMenuItem<String>(
+                    value: role,
+                    child: Text(role),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  selectedRole = value!;
+                },
+                decoration: InputDecoration(labelText: 'Role'),
+              ),
             ],
           ),
           actions: [
@@ -100,37 +102,35 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Cancel'),
+              child: Text('Batal'),
             ),
             ElevatedButton(
               onPressed: () async {
                 try {
-                  String token=await getToken();
+                  String token = await getToken();
                   final response = await http.put(
                     Uri.parse('$userURL/${user['id']}'),
                     headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer $token'
-                  },
-                    body: jsonEncode({
-                      'role': selectedRole
-                    }),
+                      'Content-Type': 'application/json',
+                      'Authorization': 'Bearer $token'
+                    },
+                    body: jsonEncode({'role': selectedRole}),
                   );
 
                   if (response.statusCode == 200) {
                     fetchUsers();
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('Role berhasil diubah'),
-                  ));
+                      content: Text('Role berhasil diubah'),
+                    ));
                   } else {
                     throw Exception('Failed to update user');
                   }
                 } catch (e) {
                   print(e);
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Gagal mengubah role'),
-                ));
+                    content: Text('Gagal mengubah role'),
+                  ));
                 }
               },
               child: Text('Save'),
@@ -146,14 +146,14 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Delete User'),
-          content: Text('Are you sure you want to delete this user?'),
+          title: Text('Hapus User'),
+          content: Text('Apakah Anda yakin menghapus user ini?'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Cancel'),
+              child: Text('Batal'),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -190,11 +190,141 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
     );
   }
 
+  void showCreateModal(BuildContext context) {
+    final TextEditingController emailController = TextEditingController(),
+        passwordController = TextEditingController(),
+        passwordConfirmController = TextEditingController(),
+        notelpController = TextEditingController(),
+        namaController = TextEditingController();
+    String selectedRole = 'Mahasiswa';
 
-  @override
-  void initState() {
-    super.initState();
-    fetchUsers();
+    bool isLoading = false;
+
+    void onSubmit() async {
+      if (emailController.text.isEmpty ||
+          passwordController.text.isEmpty ||
+          notelpController.text.isEmpty ||
+          namaController.text.isEmpty ||
+          passwordConfirmController.text.isEmpty) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Semua data harus diisi')));
+        return;
+      }
+      if (passwordController.text.length < 6) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Password minimal 6 karakter')));
+        return;
+      }
+      if (passwordController.text != passwordConfirmController.text) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Password harus sama'),
+          backgroundColor: Colors.orange,
+          behavior: SnackBarBehavior.floating, // Menempatkan SnackBar di atas
+          margin: EdgeInsets.only(top: 20),
+        ));
+        return;
+      }
+      setState(() {
+        isLoading = true;
+      });
+
+      try {
+        ApiResponse response = await register(
+            namaController.text,
+            emailController.text,
+            passwordController.text,
+            notelpController.text,
+            selectedRole);
+
+        if (response.error == null) {
+          fetchUsers();
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('User  berhasil ditambahkan'),
+          ));
+        } else {
+          throw Exception('Gagal menambahkan user');
+        }
+      } catch (e) {
+        print(e);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Gagal menambahkan user'),
+        ));
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Tambah User'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: namaController,
+                decoration: InputDecoration(labelText: 'Nama'),
+                enabled: false,
+              ),
+              TextField(
+                controller: emailController,
+                decoration: InputDecoration(labelText: 'Email'),
+                enabled: false,
+              ),
+              TextField(
+                controller: notelpController,
+                decoration: InputDecoration(labelText: 'Nomor Telepon'),
+                enabled: false,
+              ),
+              TextField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: InputDecoration(labelText: 'Password'),
+                enabled: false,
+              ),
+              TextField(
+                controller: passwordConfirmController,
+                obscureText: true,
+                decoration: InputDecoration(labelText: 'Konfirmasi Password'),
+                enabled: false,
+              ),
+              SizedBox(height: 10),
+              DropdownButtonFormField<String>(
+                value: selectedRole,
+                items: ['Mahasiswa', 'Karyawan', 'Admin'].map((role) {
+                  return DropdownMenuItem<String>(
+                    value: role,
+                    child: Text(role),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  selectedRole = value!;
+                },
+                decoration: InputDecoration(labelText: 'Role'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Batal'),
+            ),
+            ElevatedButton(
+              onPressed: isLoading ? null : onSubmit,
+              child: isLoading
+                  ? CircularProgressIndicator(color: Colors.green)
+                  : Text('Tambah'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -202,7 +332,14 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Akun'),
-        backgroundColor: Colors.green,
+        backgroundColor: const Color.fromARGB(255, 26, 48, 161),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                showCreateModal(context);
+              })
+        ],
       ),
       drawer: Drawer(
         child: ListView(
@@ -242,7 +379,7 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
               title: Text('Kantin'),
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AdminKantinPage()));
+                    MaterialPageRoute(builder: (context) => AdminAkunPage()));
               },
             ),
           ],
@@ -252,52 +389,65 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
           ? Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  columns: [
-                    DataColumn(label: Text('Nama')),
-                    DataColumn(label: Text('Email')),
-                    DataColumn(label: Text('Nomor Telepon')),
-                    DataColumn(label: Text('Role')),
-                    // DataColumn(label: Text('Foto')),
-                    DataColumn(label: Text('Actions')),
-                  ],
-                  rows: users.map((user) {
-                    return DataRow(cells: [
-                      DataCell(Text(user['name'])),
-                      DataCell(Text(user['email'])),
-                      DataCell(Text(user['notelp'])),
-                      DataCell(Text(user['role'])),
-                      // DataCell(
-                      //   Image.network(
-                      //     user['image'],
-                      //     width: 50,
-                      //     height: 50,
-                      //     fit: BoxFit.cover,
-                      //   ),
-                      // ),
-                      DataCell(
-                        Row(
+              child: ListView.builder(
+                itemCount: users.length,
+                itemBuilder: (context, index) {
+                  final user = users[index];
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 8.0),
+                    child: ListTile(
+                        title: Text(user['name']),
+                        subtitle: Text('${user['email']}\n${user['notelp']}\n${user['role']}'),
+                        isThreeLine: true,
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              icon: Icon(Icons.edit, color: Colors.blue),
-                              onPressed: () {
-                                showEditModal(context, user);
-                              },
-                            ),
+                                onPressed: () {
+                                  showEditModal(context, user);
+                                },
+                                icon: Icon(Icons.edit, color: Colors.blue)),
                             IconButton(
-                              icon: Icon(Icons.delete, color: Colors.red),
-                              onPressed: () {
-                                showDeleteModal(context, user['id']);
-                              },
-                            ),
+                                onPressed: () {
+                                  showDeleteModal(context, user['id']);
+                                },
+                                icon: Icon(Icons.delete, color: Colors.red))
                           ],
-                        ),
-                      ),
-                    ]);
-                  }).toList(),
-                ),
+                        )),
+                    // rows: users.map((user) {
+                    //   return DataRow(cells: [
+                    //     DataCell(Text(user['name'])),
+                    //     DataCell(Text(user['email'])),
+                    //     DataCell(Text(user['notelp'])),
+                    //     DataCell(Text(user['role'])),
+                    // DataCell(
+                    //   Image.network(
+                    //     user['image'],
+                    //     width: 50,
+                    //     height: 50,
+                    //     fit: BoxFit.cover,
+                    //   ),
+                    // ),
+                    // DataCell(
+                    //   Row(
+                    //     children: [
+                    //       IconButton(
+                    //         icon: Icon(Icons.edit, color: Colors.blue),
+                    //         onPressed: () {
+                    //           showEditModal(context, user);
+                    //         },
+                    //       ),
+                    //       IconButton(
+                    //         icon: Icon(Icons.delete, color: Colors.red),
+                    //         onPressed: () {
+                    //           showDeleteModal(context, user['id']);
+                    //         },
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+                  );
+                },
               ),
             ),
     );
