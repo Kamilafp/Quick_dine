@@ -159,3 +159,17 @@ Future<void> fetchKantins() async {
     apiResponse.error = serverError;
   }
 }
+
+Future<int> getTotalkantin() async{
+  String token = await getToken();
+    final response = await http.get(Uri.parse('$kantinURL/count'),
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token'
+    });
+    if(response.statusCode==200){
+      return json.decode(response.body)['total_kantin'];
+    }else{
+      throw Exception('Failed to load kantin count');
+    }
+}
