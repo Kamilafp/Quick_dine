@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:quick_dine/services/detail_pesanan_service.dart';
+import 'package:quick_dine/services/menu_service.dart';
+import 'package:quick_dine/services/pesanan_service.dart';
 import 'package:quick_dine/views/screens/karyawan_pesanan_page.dart';
 import 'package:quick_dine/views/screens/karyawan_menu_page.dart';
 import 'package:quick_dine/views/screens/karyawan_detail_pesanan_page.dart';
@@ -24,22 +27,12 @@ class _KaryawanDashboardPageState extends State<KaryawanDashboardPage> {
 
   Future<void> fetchData() async {
     try {
-      final menuResponse = await http.get(Uri.parse('http://127.0.0.1:8000/api/menu'));
-      final pesananResponse = await http.get(Uri.parse('http://127.0.0.1:8000/api/pesanan'));
-      final detailPesananResponse = await http.get(Uri.parse('http://127.0.0.1:8000/api/detail-pesanan'));
-
-      if (menuResponse.statusCode == 200 &&
-          pesananResponse.statusCode == 200 &&
-          detailPesananResponse.statusCode == 200) {
-        setState(() {
-          totalMenu = json.decode(menuResponse.body).length;
-          totalPesanan = json.decode(pesananResponse.body).length;
-          totalDetailPesanan = json.decode(detailPesananResponse.body).length;
-          isLoading = false;
-        });
-      } else {
-        throw Exception('Failed to load data');
-      }
+      totalMenu = await getTotalMenu();
+      totalPesanan = await getTotalPesanan();
+      totalDetailPesanan = await getTotalDetailPesanan();
+      setState(() {
+        isLoading=false;
+    });
     } catch (e) {
       print(e);
       setState(() {
