@@ -1,4 +1,4 @@
-import 'package:hungry/models/core/recipe.dart';
+import 'package:quick_dine/models/core/recipe.dart';
 
 class RecipeHelper {
   static List<Recipe> featuredRecipe = featuredRecipeRawData

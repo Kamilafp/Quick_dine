@@ -1,4 +1,4 @@
-import 'package:hungry/models/core/pesanan.dart'; // Asumsikan ini adalah file Order sebelumnya
+import 'package:quick_dine/models/core/pesanan.dart';
 
 class OrderHelper {
   // Metode untuk mengonversi JSON ke objek Order

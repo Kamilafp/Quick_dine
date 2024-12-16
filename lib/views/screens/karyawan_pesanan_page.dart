@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:hungry/views/screens/karyawan_detail_pesanan_page.dart';
-import 'package:hungry/views/screens/karyawan_menu_page.dart';
-import 'package:hungry/views/screens/karyawan_dashboard_page.dart';
+import 'package:quick_dine/views/screens/karyawan_detail_pesanan_page.dart';
+import 'package:quick_dine/views/screens/karyawan_menu_page.dart';
+import 'package:quick_dine/views/screens/karyawan_dashboard_page.dart';
 
 class KaryawanPesananPage extends StatefulWidget {
   @override

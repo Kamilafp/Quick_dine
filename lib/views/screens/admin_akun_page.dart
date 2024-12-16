@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:hungry/views/screens/admin_kantin_page.dart';
-import 'package:hungry/views/screens/admin_dashboard_page.dart';
+import 'package:quick_dine/views/screens/admin_kantin_page.dart';
+import 'package:quick_dine/views/screens/admin_dashboard_page.dart';
 
 class AdminAkunPage extends StatefulWidget {
   @override

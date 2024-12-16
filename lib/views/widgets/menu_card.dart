@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hungry/models/core/menu.dart'; // Pastikan Menu class diimport dengan benar
+import 'package:quick_dine/models/core/menu.dart'; // Pastikan Menu class diimport dengan benar
 
 class MenuCard extends StatelessWidget {
   final Menu menu;

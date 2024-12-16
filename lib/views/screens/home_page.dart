@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:hungry/views/screens/profile_page.dart';
-import 'package:hungry/views/utils/AppColor.dart';
-import 'package:hungry/views/widgets/custom_app_bar.dart';
-import 'package:hungry/models/core/ruko.dart';
-import 'package:hungry/models/helper/ruko_helper.dart';
-import 'package:hungry/views/widgets/featured_ruko_card.dart';
-import 'package:hungry/views/screens/ruko_list_page.dart';
+import 'package:quick_dine/services/user_service.dart';
+import 'package:quick_dine/views/screens/auth/welcome_page.dart';
+import 'package:quick_dine/views/screens/profile_page.dart';
+import 'package:quick_dine/views/utils/AppColor.dart';
+import 'package:quick_dine/views/widgets/custom_app_bar.dart';
+import 'package:quick_dine/models/core/ruko.dart';
+import 'package:quick_dine/models/helper/ruko_helper.dart';
+import 'package:quick_dine/views/widgets/featured_ruko_card.dart';
+import 'package:quick_dine/views/screens/ruko_list_page.dart';
 
 class HomePage extends StatelessWidget {
   final List<Ruko> featuredRuko = RukoHelper.contohRuko();

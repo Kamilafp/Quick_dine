@@ -2,13 +2,13 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:hungry/models/core/recipe.dart';
-import 'package:hungry/models/helper/recipe_helper.dart';
-import 'package:hungry/views/screens/search_page.dart';
-import 'package:hungry/views/utils/AppColor.dart';
-import 'package:hungry/views/widgets/category_card.dart';
-import 'package:hungry/views/widgets/popular_recipe_card.dart';
-import 'package:hungry/views/widgets/recommendation_recipe_card.dart';
+import 'package:quick_dine/models/core/recipe.dart';
+import 'package:quick_dine/models/helper/recipe_helper.dart';
+import 'package:quick_dine/views/screens/search_page.dart';
+import 'package:quick_dine/views/utils/AppColor.dart';
+import 'package:quick_dine/views/widgets/category_card.dart';
+import 'package:quick_dine/views/widgets/popular_recipe_card.dart';
+import 'package:quick_dine/views/widgets/recommendation_recipe_card.dart';
 import 'package:flutter/services.dart';
 
 class ExplorePage extends StatelessWidget {

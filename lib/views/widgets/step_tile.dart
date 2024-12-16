@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hungry/models/core/recipe.dart';
+import 'package:quick_dine/models/core/recipe.dart';
 
 class StepTile extends StatelessWidget {
   final TutorialStep data;

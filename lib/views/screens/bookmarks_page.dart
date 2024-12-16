@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hungry/models/helper/pesanan_helper.dart';
-import 'package:hungry/models/core/pesanan.dart';
-import 'package:hungry/views/widgets/custom_app_bar.dart';
-import 'package:hungry/views/screens/profile_page.dart';
+import 'package:quick_dine/models/helper/pesanan_helper.dart';
+import 'package:quick_dine/models/core/pesanan.dart';
+import 'package:quick_dine/views/screens/profile_page.dart';
+import 'package:quick_dine/views/widgets/custom_app_bar.dart';
 
 class BookmarksPage extends StatefulWidget {
   @override
