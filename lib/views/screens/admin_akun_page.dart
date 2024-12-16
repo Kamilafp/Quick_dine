@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:quick_dine/constant.dart';
+import 'package:quick_dine/models/api_response.dart';
+import 'package:quick_dine/services/user_service.dart';
 import 'package:quick_dine/views/screens/admin_kantin_page.dart';
 import 'package:quick_dine/views/screens/admin_dashboard_page.dart';
+import 'package:quick_dine/views/widgets/modals/login_modal.dart';
 
 class AdminAkunPage extends StatefulWidget {
   @override
@@ -13,17 +17,17 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
   List<Map<String, dynamic>> users = [];
   bool isLoading = true;
 
-  @override
-  void initState() {
-    super.initState();
-    fetchUsers();
-  }
 
   Future<void> fetchUsers() async {
+    String token = await getToken();
     try {
-      final response = await http.get(Uri.parse('http://localhost/api/user'));
+      final response = await http.get(Uri.parse('$baseURL/allUsers'),
+      headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
       if (response.statusCode == 200) {
-        final data = json.decode(response.body) as List;
+        final data = json.decode(response.body)['users'] as List;
         setState(() {
           users = data.map((item) => Map<String, dynamic>.from(item)).toList();
           isLoading = false;
@@ -40,10 +44,18 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
   }
 
   void showEditModal(BuildContext context, Map<String, dynamic> user) {
-    final TextEditingController nameController = TextEditingController(text: user['name']);
-    final TextEditingController emailController = TextEditingController(text: user['email']);
-    final TextEditingController phoneController = TextEditingController(text: user['phone']);
+    final TextEditingController nameController =
+        TextEditingController(text: user['name']);
+    final TextEditingController emailController =
+        TextEditingController(text: user['email']);
+    final TextEditingController notelpController =
+        TextEditingController(text: user['notelp']);
 
+    List<String> roles = ['Mahasiswa', 'Karyawan', 'Admin'];
+    String selectedRole = user['role'];
+    if (!roles.contains(selectedRole)) {
+    selectedRole = roles.first; // Fallback to the first role if not found
+  }
     showDialog(
       context: context,
       builder: (context) {
@@ -54,16 +66,33 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
             children: [
               TextField(
                 controller: nameController,
-                decoration: InputDecoration(labelText: 'Name'),
+                decoration: InputDecoration(labelText: 'Nama'),
+                enabled: false,
               ),
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(labelText: 'Email'),
+                enabled: false,
               ),
               TextField(
-                controller: phoneController,
-                decoration: InputDecoration(labelText: 'Phone'),
+                controller: notelpController,
+                decoration: InputDecoration(labelText: 'Nomor Telepon'),
+                enabled: false,
               ),
+              SizedBox(height: 10),
+            DropdownButtonFormField<String>(
+              value: selectedRole,
+              items: roles.map((role) {
+                return DropdownMenuItem<String>(
+                  value: role,
+                  child: Text(role),
+                );
+              }).toList(),
+              onChanged: (value) {
+                selectedRole = value!;
+              },
+              decoration: InputDecoration(labelText: 'Role'),
+            ),
             ],
           ),
           actions: [
@@ -76,23 +105,32 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
             ElevatedButton(
               onPressed: () async {
                 try {
+                  String token=await getToken();
                   final response = await http.put(
-                    Uri.parse('http://localhost/api/user/${user['id']}'),
-                    body: {
-                      'name': nameController.text,
-                      'email': emailController.text,
-                      'phone': phoneController.text,
-                    },
+                    Uri.parse('$userURL/${user['id']}'),
+                    headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer $token'
+                  },
+                    body: jsonEncode({
+                      'role': selectedRole
+                    }),
                   );
 
                   if (response.statusCode == 200) {
                     fetchUsers();
                     Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Role berhasil diubah'),
+                  ));
                   } else {
                     throw Exception('Failed to update user');
                   }
                 } catch (e) {
                   print(e);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Gagal mengubah role'),
+                ));
                 }
               },
               child: Text('Save'),
@@ -103,7 +141,7 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
     );
   }
 
-  void showDeleteModal(BuildContext context, int userId) {
+  void showDeleteModal(BuildContext context, int id) {
     showDialog(
       context: context,
       builder: (context) {
@@ -120,15 +158,28 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
             ElevatedButton(
               onPressed: () async {
                 try {
-                  final response = await http.delete(Uri.parse('http://localhost/api/user/$userId'));
+                  String token = await getToken();
+                  final response = await http.delete(
+                    Uri.parse('$userURL/$id'),
+                    headers: {
+                      'Authorization': 'Bearer $token',
+                      'Accept': 'application/json',
+                    },
+                  );
                   if (response.statusCode == 200) {
                     fetchUsers();
                     Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('User  berhasil dihapus'),
+                    ));
                   } else {
                     throw Exception('Failed to delete user');
                   }
                 } catch (e) {
                   print(e);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Gagal menghapus user'),
+                  ));
                 }
               },
               child: Text('Delete'),
@@ -137,6 +188,13 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
         );
       },
     );
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUsers();
   }
 
   @override
@@ -165,21 +223,26 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
               leading: Icon(Icons.dashboard),
               title: Text('Dashboard'),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AdminDashboardPage()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AdminDashboardPage()));
               },
             ),
             ListTile(
               leading: Icon(Icons.admin_panel_settings),
               title: Text('Admin'),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AdminAkunPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AdminAkunPage()));
               },
             ),
             ListTile(
               leading: Icon(Icons.store),
               title: Text('Kantin'),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AdminKantinPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AdminKantinPage()));
               },
             ),
           ],
@@ -193,27 +256,27 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
                   columns: [
-                    DataColumn(label: Text('Name')),
+                    DataColumn(label: Text('Nama')),
                     DataColumn(label: Text('Email')),
-                    DataColumn(label: Text('Phone')),
+                    DataColumn(label: Text('Nomor Telepon')),
                     DataColumn(label: Text('Role')),
-                    DataColumn(label: Text('Photo')),
+                    // DataColumn(label: Text('Foto')),
                     DataColumn(label: Text('Actions')),
                   ],
                   rows: users.map((user) {
                     return DataRow(cells: [
                       DataCell(Text(user['name'])),
                       DataCell(Text(user['email'])),
-                      DataCell(Text(user['phone'])),
+                      DataCell(Text(user['notelp'])),
                       DataCell(Text(user['role'])),
-                      DataCell(
-                        Image.network(
-                          user['photo'],
-                          width: 50,
-                          height: 50,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                      // DataCell(
+                      //   Image.network(
+                      //     user['image'],
+                      //     width: 50,
+                      //     height: 50,
+                      //     fit: BoxFit.cover,
+                      //   ),
+                      // ),
                       DataCell(
                         Row(
                           children: [
