@@ -124,41 +124,35 @@ Future<String> addKantin(String namaKantin, int idKaryawan) async {
 }
 
 
-Future<List<dynamic>> fetchUsers() async {
-  final response = await http.get(Uri.parse(userURL));
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
-    return data['users'];
-  } else {
-    throw Exception('Failed to load users');
-  }
-}
+// Future<List<dynamic>> fetchUsers() async {
+//   final response = await http.get(Uri.parse(userURL));
+//   if (response.statusCode == 200) {
+//     final data = jsonDecode(response.body);
+//     return data['users'];
+//   } else {
+//     throw Exception('Failed to load users');
+//   }
+// }
 
-Future<void> fetchKantins() async {
-  ApiResponse apiResponse = ApiResponse();
-  try {
-    String token=await getToken();
-    final response = await http.get(Uri.parse(kantinURL),
-        headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'});
-    switch (response.statusCode) {
-      case 200:
-        apiResponse.data = Kantin.fromJson(jsonDecode(response.body));
-        break;
-      case 422:
-        final errors = jsonDecode(response.body)['errors'];
-        apiResponse.error = errors[errors.keys.elementAt(0)[0]];
-        break;
-      case 403:
-        apiResponse.error = jsonDecode(response.body)['message'];
-        break;
-      default:
-        apiResponse.error = somethingWentWrong;
-        break;
-    }
-  } catch (e) {
-    apiResponse.error = serverError;
-  }
-}
+// Future<void> fetchKantin() async {
+//   ApiResponse apiResponse = ApiResponse();
+//   try {
+//     String token=await getToken();
+//     final response = await http.get(Uri.parse(kantinURL),
+//         headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'});
+//         if (response.statusCode == 200) {
+//         final data = json.decode(response.body)['kantin'] as List;
+//         setState(() {
+//           kantins = data.map((item) => Map<String, dynamic>.from(item)).toList();
+//           isLoading = false;
+//         });
+//       } else {
+//         throw Exception('Failed to load kantin');
+//       }
+//   } catch (e) {
+//     apiResponse.error = serverError;
+//   }
+// }
 
 Future<int> getTotalkantin() async{
   String token = await getToken();
@@ -173,3 +167,18 @@ Future<int> getTotalkantin() async{
       throw Exception('Failed to load kantin count');
     }
 }
+
+Future<List<Map<String, dynamic>>> fetchKantin() async {
+  String token = await getToken();
+  final response = await http.get(Uri.parse(kantinURL), headers: {
+    'Accept': 'application/json',
+    'Authorization': 'Bearer $token'
+  });
+  if (response.statusCode == 200) {
+    final data = json.decode(response.body)['kantin'] as List;
+    return data.map((item) => Map<String, dynamic>.from(item)).toList();
+  } else {
+    throw Exception('Failed to load kantin');
+  }
+}
+
