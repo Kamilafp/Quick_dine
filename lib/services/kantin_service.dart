@@ -29,7 +29,7 @@ Future<ApiResponse> getKantin() async {
   return apiResponse;
 }
 
-Future<ApiResponse> editKantin(int id, String namaKantin) async {
+Future<ApiResponse> editKantin(int id, String namaKantin, int idKaryawan, String metodePembayaran, String noTelp) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
@@ -38,8 +38,17 @@ Future<ApiResponse> editKantin(int id, String namaKantin) async {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     }, body: {
-      'nama_kantin': namaKantin
+      'nama_kantin': namaKantin,
+      'id_karyawan': idKaryawan.toString(),
+      'metode_pembayaran' : metodePembayaran,
+      'no_telp' : noTelp,
     });
+    print('Nama Kantin: $namaKantin');
+    print('ID Karyawan: $idKaryawan');
+    print('Metode Pembayaran: $metodePembayaran');
+    print('No Telp: $noTelp');
+
+    print('Status Code: ${response.statusCode}');
 
     switch(response.statusCode){
       case 200:

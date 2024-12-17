@@ -55,62 +55,70 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
     print('Karyawan List: $karyawanList');  // Cek data yang sudah difilter
   }
 
-  Future<void> addKantin(String namaKantin, int idKaryawan, String metodePembayaran, String noTelp) async {
-    try {
-      final response = await http.post(
-        Uri.parse(kantinURL),
-        body: json.encode({
-          'nama_kantin': namaKantin,
-          'id_karyawan': idKaryawan,
-          'metode_pembayaran' : metodePembayaran,
-          'no_telp' : noTelp,
-        }),
-        headers: {'Content-Type': 'application/json'},
-      );
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      if (response.statusCode == 201) {
-        fetchKantins();
-      } else {
-        throw Exception('Failed to add kantin');
-      }
-    } catch (e) {
-      print(e);
-    }
+  String getKaryawanNameById(int id) {
+    // Menemukan karyawan berdasarkan id
+    var karyawan = karyawanList.firstWhere(
+      (karyawan) => karyawan['id'] == id,
+      orElse: () => {'name': 'Tidak Ditemukan'}
+    );
+    return karyawan['name'] ?? 'Tidak Ditemukan';
   }
 
-  Future<void> editKantin(int id, String namaKantin, int idKaryawan) async {
-    try {
-      final response = await http.put(
-        Uri.parse('$kantinURL/$id'),
-        body: json.encode({
-          'nama_kantin': namaKantin,
-          'id_karyawan': idKaryawan,
-        }),
-        headers: {'Content-Type': 'application/json'},
-      );
-      if (response.statusCode == 200) {
-        fetchKantins();
-      } else {
-        throw Exception('Failed to edit kantin');
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
+  // Future<void> addKantin(String namaKantin, int idKaryawan, String metodePembayaran, String noTelp) async {
+  //   try {
+  //     final response = await http.post(
+  //       Uri.parse(kantinURL),
+  //       body: json.encode({
+  //         'nama_kantin': namaKantin,
+  //         'id_karyawan': idKaryawan,
+  //         'metode_pembayaran' : metodePembayaran,
+  //         'no_telp' : noTelp,
+  //       }),
+  //       headers: {'Content-Type': 'application/json'},
+  //     );
+  //     print('Response status: ${response.statusCode}');
+  //     if (response.statusCode == 201) {
+  //       fetchKantins();
+  //     } else {
+  //       throw Exception('Failed to add kantin');
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
-  Future<void> deleteKantin(int id) async {
-    try {
-      final response = await http.delete(Uri.parse('$kantinURL/$id'));
-      if (response.statusCode == 200) {
-        fetchKantins();
-      } else {
-        throw Exception('Failed to delete kantin');
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
+  // Future<void> editKantin(int id, String namaKantin, int idKaryawan) async {
+  //   try {
+  //     final response = await http.put(
+  //       Uri.parse('$kantinURL/$id'),
+  //       body: json.encode({
+  //         'nama_kantin': namaKantin,
+  //         'id_karyawan': idKaryawan,
+  //       }),
+  //       headers: {'Content-Type': 'application/json'},
+  //     );
+  //     if (response.statusCode == 200) {
+  //       fetchKantins();
+  //     } else {
+  //       throw Exception('Failed to edit kantin');
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+
+  // Future<void> deleteKantin(int id) async {
+  //   try {
+  //     final response = await http.delete(Uri.parse('$kantinURL/$id'));
+  //     if (response.statusCode == 200) {
+  //       fetchKantins();
+  //     } else {
+  //       throw Exception('Failed to delete kantin');
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   void showAddModal() {
     final _namaKantinController = TextEditingController(),
@@ -171,6 +179,13 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
                   _metodepembayaranController.text,
                   _notelpController.text,
                 );
+                // Tampilkan pesan bahwa data berhasil ditambahkan
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Data berhasil ditambahkan')),
+                );
+                // Perbarui tampilan dengan data terbaru
+                fetchKantins();
+                // Tutup dialog setelah menyimpan data
                 Navigator.pop(context);
               } else {
                 print('Pilih karyawan terlebih dahulu');
@@ -185,6 +200,8 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
 
   void showEditModal(BuildContext context, Map<String, dynamic> kantin) {
     final _namaKantinController = TextEditingController(text: kantin['nama_kantin']);
+    final _metodepembayaranController = TextEditingController(text: kantin['metode_pembayaran']);
+    final _notelpController = TextEditingController(text: kantin['no_telp']);
     String selectedIdKaryawan = kantin['id_karyawan'].toString();
 
     showDialog(
@@ -210,7 +227,15 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
                   selectedIdKaryawan = value!;
                 },
                 decoration: InputDecoration(labelText: 'Karyawan')
-            )
+            ),
+            TextField(
+              controller: _metodepembayaranController,
+              decoration: InputDecoration(labelText: 'Metode Pembayaran'),
+            ),
+            TextField(
+              controller: _notelpController,
+              decoration: InputDecoration(labelText: 'No Telepon'),
+            ),
           ],
         ),
         actions: [
@@ -223,8 +248,18 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
               editKantin(
                 kantin['id'],
                 _namaKantinController.text,
-                int.parse(selectedIdKaryawan));
-              Navigator.pop(context);
+                int.parse(selectedIdKaryawan),
+                _metodepembayaranController.text,
+                _notelpController.text
+              );
+              // Tampilkan pesan bahwa data berhasil diubah
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Data berhasil diubah')),
+                );
+                // Perbarui tampilan dengan data terbaru
+                fetchKantins();
+                // Tutup dialog setelah menyimpan data
+                Navigator.pop(context);
             },
             child: Text('Simpan'),
           ),
@@ -247,6 +282,11 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
           ElevatedButton(
             onPressed: () {
               deleteKantin(id);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Data berhasil dihapus')),
+              );
+              // Perbarui tampilan dengan data terbaru
+              fetchKantins();
               Navigator.pop(context);
             },
             child: Text('Hapus'),
@@ -315,13 +355,30 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
               itemCount: kantins.length,
               itemBuilder: (context, index) {
                 final kantin = kantins[index];
+                String karyawanName = getKaryawanNameById(kantin['id_karyawan']);
                 return ListTile(
                   title: Text(kantin['nama_kantin']),
-                  subtitle: Text(kantin['karyawan']['name']),
-                  trailing: IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () => showEditModal(context, kantin),
-                  ),
+                  // subtitle: Text(kantin['karyawan']['name']),
+                  subtitle: Text('$karyawanName\n${kantin['metode_pembayaran']}\n${kantin['no_telp']}'),
+                  // trailing: IconButton(
+                  //   icon: Icon(Icons.edit),
+                  //   onPressed: () => showEditModal(context, kantin),
+                  // ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            showEditModal(context, kantin);
+                          },
+                          icon: Icon(Icons.edit, color: Colors.blue)),
+                        IconButton(
+                          onPressed: () {
+                            showDeleteModal(kantin['id']);
+                          },
+                          icon: Icon(Icons.delete, color: Colors.red))
+                      ],
+                  )
                 );
               },
             ),
