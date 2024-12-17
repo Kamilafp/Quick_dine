@@ -38,7 +38,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
       body: Stack(
         children: [
           [
-            HomePage(),
+            // HomePage(),
             BookmarksPage(),
           ][_selectedIndex],
           BottomGradientWidget(),
