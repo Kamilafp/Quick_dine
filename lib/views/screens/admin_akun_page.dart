@@ -6,6 +6,7 @@ import 'package:quick_dine/models/api_response.dart';
 import 'package:quick_dine/services/user_service.dart';
 import 'package:quick_dine/views/screens/admin_dashboard_page.dart';
 import 'package:quick_dine/views/screens/admin_kantin_page.dart';
+import 'package:quick_dine/views/screens/auth/welcome_page.dart';
 
 class AdminAkunPage extends StatefulWidget {
   @override
@@ -376,6 +377,17 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
                     MaterialPageRoute(builder: (context) => AdminKantinPage()));
               },
             ),
+            ListTile(
+              leading: Icon(Icons.exit_to_app_outlined, color:Colors.red),
+              title: Text('Kantin'),
+              onTap: (){
+            logout().then((value) => {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => WelcomePage()),
+                        (route) => false)
+                  });
+              }
+            )
           ],
         ),
       ),

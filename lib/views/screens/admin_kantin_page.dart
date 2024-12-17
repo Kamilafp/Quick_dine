@@ -8,6 +8,7 @@ import 'package:quick_dine/services/user_service.dart';
 import 'package:quick_dine/views/screens/admin_akun_page.dart';
 import 'package:quick_dine/views/screens/admin_dashboard_page.dart';
 import 'package:quick_dine/constant.dart';
+import 'package:quick_dine/views/screens/auth/welcome_page.dart';
 
 class AdminKantinPage extends StatefulWidget {
   @override
@@ -346,17 +347,32 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => AdminKantinPage()));
               },
             ),
+            ListTile(
+              leading: Icon(Icons.exit_to_app_outlined, color:Colors.red),
+              title: Text('Kantin'),
+              onTap: (){
+            logout().then((value) => {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => WelcomePage()),
+                        (route) => false)
+                  });
+              }
+            )
           ],
         ),
       ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ListView.builder(
               itemCount: kantins.length,
               itemBuilder: (context, index) {
                 final kantin = kantins[index];
                 String karyawanName = getKaryawanNameById(kantin['id_karyawan']);
-                return ListTile(
+                return Card(
+                    margin: EdgeInsets.symmetric(vertical: 8.0),
+                    child: ListTile(
                   title: Text(kantin['nama_kantin']),
                   // subtitle: Text(kantin['karyawan']['name']),
                   subtitle: Text('$karyawanName\n${kantin['metode_pembayaran']}\n${kantin['no_telp']}'),
@@ -364,6 +380,7 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
                   //   icon: Icon(Icons.edit),
                   //   onPressed: () => showEditModal(context, kantin),
                   // ),
+                  isThreeLine: true,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                       children: [
@@ -378,9 +395,10 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
                           },
                           icon: Icon(Icons.delete, color: Colors.red))
                       ],
-                  )
+                    )),
                 );
               },
+          ),
             ),
     );
   }
