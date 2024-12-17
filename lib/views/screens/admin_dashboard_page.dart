@@ -69,7 +69,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             ),
             ListTile(
               leading: Icon(Icons.admin_panel_settings),
-              title: Text('Admin'),
+              title: Text('Akun'),
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => AdminAkunPage()));
               },
@@ -78,7 +78,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               leading: Icon(Icons.store),
               title: Text('Kantin'),
               onTap: () {
-                // Navigator.push(context, MaterialPageRoute(builder: (context) => AdminKantinPage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AdminKantinPage()));
               },
             ),
           ],

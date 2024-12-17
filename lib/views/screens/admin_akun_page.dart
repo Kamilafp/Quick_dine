@@ -5,6 +5,7 @@ import 'package:quick_dine/constant.dart';
 import 'package:quick_dine/models/api_response.dart';
 import 'package:quick_dine/services/user_service.dart';
 import 'package:quick_dine/views/screens/admin_dashboard_page.dart';
+import 'package:quick_dine/views/screens/admin_kantin_page.dart';
 
 class AdminAkunPage extends StatefulWidget {
   @override
@@ -69,17 +70,14 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
               TextField(
                 controller: nameController,
                 decoration: InputDecoration(labelText: 'Nama'),
-                enabled: false,
               ),
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(labelText: 'Email'),
-                enabled: false,
               ),
               TextField(
                 controller: notelpController,
                 decoration: InputDecoration(labelText: 'Nomor Telepon'),
-                enabled: false,
               ),
               SizedBox(height: 10),
               DropdownButtonFormField<String>(
@@ -268,29 +266,25 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
               TextField(
                 controller: namaController,
                 decoration: InputDecoration(labelText: 'Nama'),
-                enabled: false,
               ),
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(labelText: 'Email'),
-                enabled: false,
               ),
               TextField(
                 controller: notelpController,
                 decoration: InputDecoration(labelText: 'Nomor Telepon'),
-                enabled: false,
               ),
               TextField(
                 controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(labelText: 'Password'),
-                enabled: false,
               ),
               TextField(
                 controller: passwordConfirmController,
                 obscureText: true,
                 decoration: InputDecoration(labelText: 'Konfirmasi Password'),
-                enabled: false,
+                // enabled: false,
               ),
               SizedBox(height: 10),
               DropdownButtonFormField<String>(
@@ -332,7 +326,7 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Akun'),
-        backgroundColor: const Color.fromARGB(255, 26, 48, 161),
+        backgroundColor: const Color.fromARGB(255, 26, 161, 69),
         actions: [
           IconButton(
               icon: Icon(Icons.add),
@@ -368,7 +362,7 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
             ),
             ListTile(
               leading: Icon(Icons.admin_panel_settings),
-              title: Text('Admin'),
+              title: Text('Akun'),
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => AdminAkunPage()));
@@ -379,7 +373,7 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
               title: Text('Kantin'),
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AdminAkunPage()));
+                    MaterialPageRoute(builder: (context) => AdminKantinPage()));
               },
             ),
           ],

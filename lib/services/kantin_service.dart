@@ -102,7 +102,7 @@ Future<String> getToken() async {
   return pref.getString('token') ?? '';
 }
 
-Future<String> addKantin(String namaKantin, int idKaryawan) async {
+Future<String> addKantin(String namaKantin, int idKaryawan, String metodePembayaran, String noTelp) async {
   String token = await getToken();
   final response = await http.post(
     Uri.parse(kantinURL),
@@ -113,6 +113,8 @@ Future<String> addKantin(String namaKantin, int idKaryawan) async {
     body: jsonEncode({
       'nama_kantin': namaKantin,
       'id_karyawan': idKaryawan,
+      'metode_pembayaran' : metodePembayaran,
+      'no_telp' : noTelp,
     }),
   );
 
