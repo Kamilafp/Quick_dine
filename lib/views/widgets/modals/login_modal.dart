@@ -67,9 +67,9 @@ class _LoginModalState extends State<LoginModal> {
         builder: (context) => AdminDashboardPage(),
       ));
     } else if (user.role == 'mahasiswa'||user.role == 'Mahasiswa') {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => PageSwitcher(initialPageIndex: 0),
-      ));
+      // Navigator.of(context).pushReplacement(MaterialPageRoute(
+      //   builder: (context) => PageSwitcher(initialPageIndex: 0),
+      // ));
     } else if (user.role == 'karyawan'||user.role == 'Karyawan') {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => KaryawanDashboardPage(),

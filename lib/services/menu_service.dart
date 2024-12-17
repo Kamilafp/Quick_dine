@@ -16,7 +16,7 @@ Future<ApiResponse> getAllMenu(int idKantin) async {
   try {
     String token = await getToken();
     final response = await http.get(
-      Uri.parse('$baseURL/kantin/$idKantin/menu'), // URL dinamis
+      Uri.parse('$baseURL/kantin/$idKantin/menu'),
       headers: {
         'Accept': 'application/json',
         'Authorization': 'Bearer $token',
@@ -25,7 +25,6 @@ Future<ApiResponse> getAllMenu(int idKantin) async {
 
     switch (response.statusCode) {
       case 200:
-      // Mapping respons ke model Menu
         apiResponse.data = (jsonDecode(response.body)['menu'] as List)
             .map((p) => Menu.fromJson(p))
             .toList();
@@ -65,4 +64,118 @@ Future<int> getTotalMenu(int idKantin) async {
     throw Exception('Failed to load menu count');
   }
 }
+Future<ApiResponse> createMenu(
+    int idKantin, Menu menu, File? imageFile) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('$baseURL/kantin/$idKantin/menu'));
+
+    request.headers.addAll({
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+
+    request.fields['nama_menu'] = menu.nama;
+    request.fields['deskripsi'] = menu.deskripsi ?? '';
+    request.fields['harga'] = menu.harga.toString();
+    request.fields['stok'] = menu.stok.toString();
+
+    if (imageFile != null) {
+      request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
+    }
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body);
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    print("Error: $e");
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+Future<ApiResponse> updateMenu(
+    int idKantin, Menu menu, File? imageFile) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    var request = http.MultipartRequest(
+        'PUT', Uri.parse('$baseURL/kantin/$idKantin/menu/${menu.id}'));
+
+    request.headers.addAll({
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+
+    request.fields['nama_menu'] = menu.nama;
+    request.fields['deskripsi'] = menu.deskripsi ?? '';
+    request.fields['harga'] = menu.harga.toString();
+    request.fields['stok'] = menu.stok.toString();
+
+    if (imageFile != null) {
+      request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
+    }
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body);
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    print("Error: $e");
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+Future<ApiResponse> deleteMenu(int idKantin, String menuId) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    final response = await http.delete(
+      Uri.parse('$baseURL/kantin/$idKantin/menu/$menuId'),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body);
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    print("Error: $e");
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
 

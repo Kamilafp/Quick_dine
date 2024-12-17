@@ -6,6 +6,8 @@ import 'package:quick_dine/views/screens/page_switcher.dart';
 import 'package:quick_dine/views/utils/AppColor.dart';
 import 'package:quick_dine/views/widgets/custom_text_field.dart';
 import 'package:quick_dine/views/widgets/modals/login_modal.dart';
+import 'package:quick_dine/views/screens/karyawan_dashboard_page.dart';
+import 'package:quick_dine/views/screens/admin_dashboard_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterModal extends StatefulWidget {
@@ -106,15 +108,15 @@ class _RegisterModalState extends State<RegisterModal> {
 
     if (user.role == 'admin'||user.role == 'Mdmin') {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => PageSwitcher(initialPageIndex: 0),
+        builder: (context) => AdminDashboardPage(),
       ));
     } else if (user.role == 'mahasiswa'||user.role == 'Mahasiswa') {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => PageSwitcher(initialPageIndex: 1),
-      ));
+      // Navigator.of(context).pushReplacement(MaterialPageRoute(
+      //   builder: (context) => PageSwitcher(initialPageIndex: 1),
+      // ));
     } else if (user.role == 'karyawan'||user.role == 'Karyawan') {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => PageSwitcher(initialPageIndex: 2),
+        builder: (context) => KaryawanDashboardPage(),
       ));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

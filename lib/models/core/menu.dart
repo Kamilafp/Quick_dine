@@ -1,3 +1,5 @@
+import 'package:quick_dine/constant.dart';
+
 class Menu {
   String id;
   String idKantin;
@@ -22,23 +24,11 @@ class Menu {
       id: json['id'],
       idKantin: json['id_kantin'],
       nama: json['nama_menu'],
-      harga: (json['harga']),
-      stok: (json['stok']),
+      harga: (json['harga'] as num?)?.toInt(),
+      stok: (json['stok'] as num?)?.toInt(),
       deskripsi: json['deskripsi'] ?? '',
-      image: json['image'] ?? '',
+      image: json['image'] != null ? '$baseURL/storage/${json['image']}' : null,
     );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'id_kantin': idKantin,
-      'nama_menu': nama,
-      'stok': stok,
-      'harga': harga,
-      'deskripsi': deskripsi,
-      'image': image,
-    };
   }
 
   Map<String, dynamic> toJson() {

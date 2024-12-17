@@ -37,19 +37,19 @@
 //     return menuList.map((menu) => toMap(menu)).toList();
 //   }
 
-   import 'package:quick_dine/models/core/menu.dart';
-import 'package:quick_dine/services/menu_service.dart';
-
-List<Menu> getMenuByKantinId(int idKantin) {
-    List<Menu> allMenus = getAllMenu();
-    print('ID Kantin diterima: $idKantin');
-    print('Semua Menu: ${allMenus.map((menu) => menu.toJson()).toList()}');
-    
-    var filteredMenus = allMenus.where((menu) => menu.idKantin.toString() == idKantin.toString()).toList();
-    print('Filtered Menu: ${filteredMenus.map((menu) => menu.toJson()).toList()}');
-    
-    return filteredMenus;
-  }
+//    import 'package:quick_dine/models/core/menu.dart';
+// import 'package:quick_dine/services/menu_service.dart';
+//
+// List<Menu> getMenuByKantinId(int idKantin) {
+//     List<Menu> allMenus = getAllMenu();
+//     print('ID Kantin diterima: $idKantin');
+//     print('Semua Menu: ${allMenus.map((menu) => menu.toJson()).toList()}');
+//
+//     var filteredMenus = allMenus.where((menu) => menu.idKantin.toString() == idKantin.toString()).toList();
+//     print('Filtered Menu: ${filteredMenus.map((menu) => menu.toJson()).toList()}');
+//
+//     return filteredMenus;
+//   }
 
 //   // Menambahkan contoh data menu
 //   static List<Menu> contohMenu() {
