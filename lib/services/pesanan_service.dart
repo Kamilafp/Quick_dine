@@ -9,16 +9,24 @@ Future<String> getToken() async {
   return pref.getString('token') ?? '';
 }
 
-Future<int> getTotalPesanan() async{
+Future<int> getTotalPesanan(int idKantin) async {
   String token = await getToken();
-    final response = await http.get(Uri.parse('$pesananURL/count'),
-    headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token'
-    });
-    if(response.statusCode==200){
+  try {
+    final response = await http.get(
+      Uri.parse('$baseURL/kantin/$idKantin/pesanan/count'),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
       return json.decode(response.body)['total_pesanan'];
-    }else{
-      throw Exception('Failed to load pesanan count');
+    } else {
+      throw Exception('Failed to load menu count');
     }
+  } catch (e) {
+    print("Error: $e");
+    throw Exception('Failed to load menu count');
+  }
 }

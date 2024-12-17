@@ -6,6 +6,7 @@ class User{
   String? role;
   String? image;
   String? token;
+  int? idKantin;
 
 User({
     this.id,
@@ -14,7 +15,8 @@ User({
     this.notelp,
     this.role,
     this.image,
-    this.token
+    this.token,
+    this.idKantin,
 });
 
   // function to convert json data to user model
@@ -26,7 +28,8 @@ User({
       notelp: json['user']['notelp'],
       role: json['user']['role'],
       image: json['user']['image'],
-      token: json['token']
+      token: json['token'],
+      idKantin: json['id_kantin'],
     );
   }
 }

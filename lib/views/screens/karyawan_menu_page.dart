@@ -4,6 +4,12 @@ import 'package:http/http.dart' as http;
 import 'package:quick_dine/views/screens/karyawan_detail_pesanan_page.dart';
 import 'package:quick_dine/views/screens/karyawan_pesanan_page.dart';
 import 'package:quick_dine/views/screens/karyawan_dashboard_page.dart';
+import 'package:quick_dine/constant.dart';
+import 'package:quick_dine/models/api_response.dart';
+import 'package:quick_dine/services/menu_service.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+
 
 class KaryawanMenuPage extends StatefulWidget {
   @override
@@ -17,51 +23,98 @@ class _KaryawanMenuPageState extends State<KaryawanMenuPage> {
   @override
   void initState() {
     super.initState();
-    fetchMenus();
+    fetchMenu();
   }
 
-  Future<void> fetchMenus() async {
-    try {
-      final response = await http.get(Uri.parse('http://127.0.0.1:8000/api/menu'));
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body) as List;
-        setState(() {
-          menus = data.map((item) => Map<String, dynamic>.from(item)).toList();
-          isLoading = false;
-        });
-      } else {
-        throw Exception('Failed to load menus');
-      }
-    } catch (e) {
-      print(e);
-      setState(() {
-        isLoading = false;
-      });
+  void fetchMenu() async {
+    int idKantin = 1; // ID Kantin, bisa didapat dari state atau SharedPreferences
+    ApiResponse response = await getAllMenu(idKantin);
+
+    if (response.error == null) {
+      print("Menu List: ${response.data}");
+    } else {
+      print("Error: ${response.error}");
     }
   }
 
-  Future<void> deleteMenu(int id) async {
+  void fetchTotalMenu() async {
+    int idKantin = 1; // ID Kantin
     try {
-      final response = await http.delete(Uri.parse('http://127.0.0.1:8000/api/menu/$id'));
-      if (response.statusCode == 200) {
-        setState(() {
-          menus.removeWhere((menu) => menu['id'] == id);
-        });
-      } else {
-        throw Exception('Failed to delete menu');
-      }
+      int totalMenu = await getTotalMenu(idKantin);
+      print("Total Menu: $totalMenu");
     } catch (e) {
-      print(e);
+      print("Error fetching total menu: $e");
     }
+  }
+
+  void showDeleteModal(BuildContext context, int id) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Hapus Menu'),
+          content: Text('Apakah Anda yakin menghapus menu ini?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Batal'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  String token = await getToken();
+                  final response = await http.delete(
+                    Uri.parse('$menuURL/$id'),
+                    headers: {
+                      'Authorization': 'Bearer $token',
+                      'Accept': 'application/json',
+                    },
+                  );
+                  if (response.statusCode == 200) {
+                    fetchMenu();
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Menu  berhasil dihapus'),
+                    ));
+                  } else {
+                    throw Exception('Failed to delete menu');
+                  }
+                } catch (e) {
+                  print(e);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Gagal menghapus menu'),
+                  ));
+                }
+              },
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void showAddMenuModal() {
     TextEditingController nameController = TextEditingController();
     TextEditingController descriptionController = TextEditingController();
-    TextEditingController imageController = TextEditingController();
     TextEditingController priceController = TextEditingController();
     TextEditingController stockController = TextEditingController();
     TextEditingController idKantinController = TextEditingController();
+
+    File? imageFile;
+
+    Future<void> pickImage() async {
+      final pickedFile =
+      await ImagePicker().pickImage(source: ImageSource.gallery);
+
+      if (pickedFile != null) {
+        setState(() {
+          imageFile = File(pickedFile.path);
+        });
+      }
+    }
 
     showDialog(
       context: context,
@@ -84,10 +137,6 @@ class _KaryawanMenuPageState extends State<KaryawanMenuPage> {
                 keyboardType: TextInputType.number,
               ),
               TextField(
-                controller: imageController,
-                decoration: InputDecoration(labelText: 'Gambar'),
-              ),
-              TextField(
                 controller: stockController,
                 decoration: InputDecoration(labelText: 'Stok'),
                 keyboardType: TextInputType.number,
@@ -95,6 +144,16 @@ class _KaryawanMenuPageState extends State<KaryawanMenuPage> {
               TextField(
                 controller: idKantinController,
                 decoration: InputDecoration(labelText: 'ID Kantin'),
+              ),
+              SizedBox(height: 16),
+              imageFile == null
+                  ? Text('Belum ada gambar yang dipilih.')
+                  : Image.file(imageFile!, height: 100, width: 100),
+              ElevatedButton.icon(
+                onPressed: pickImage,
+                icon: Icon(Icons.upload),
+                label: Text('Upload Gambar'),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
               ),
             ],
           ),
@@ -106,30 +165,36 @@ class _KaryawanMenuPageState extends State<KaryawanMenuPage> {
           ),
           ElevatedButton(
             onPressed: () async {
-              final newMenu = {
-                'name': nameController.text,
-                'description': descriptionController.text,
-                'price': int.parse(priceController.text),
-                'image': imageController.text,
-                'stock': int.parse(stockController.text),
-                'id_kantin': int.parse(idKantinController.text),
-              };
-              try {
-                final response = await http.post(
-                  Uri.parse('http://127.0.0.1:8000/api/menu'),
-                  body: json.encode(newMenu),
-                  headers: {'Content-Type': 'application/json'},
-                );
-                if (response.statusCode == 201) {
-                  setState(() {
-                    menus.add(json.decode(response.body));
-                  });
-                  Navigator.pop(context);
-                } else {
-                  throw Exception('Failed to add menu');
+              if (imageFile != null) {
+                // Contoh penggunaan gambar (Anda perlu mengunggahnya ke server nanti)
+                final newMenu = {
+                  'nama_menu': nameController.text,
+                  'deskripsi': descriptionController.text,
+                  'harga': int.parse(priceController.text),
+                  'image': 'dummy_image_path', // Handle upload gambar ke API
+                  'stok': int.parse(stockController.text),
+                  'id_kantin': int.parse(idKantinController.text),
+                };
+
+                try {
+                  final response = await http.post(
+                    Uri.parse('http://127.0.0.1:8000/api/menu'),
+                    body: json.encode(newMenu),
+                    headers: {'Content-Type': 'application/json'},
+                  );
+                  if (response.statusCode == 201) {
+                    setState(() {
+                      menus.add(json.decode(response.body));
+                    });
+                    Navigator.pop(context);
+                  } else {
+                    throw Exception('Failed to add menu');
+                  }
+                } catch (e) {
+                  print(e);
                 }
-              } catch (e) {
-                print(e);
+              } else {
+                print("Pilih gambar terlebih dahulu!");
               }
             },
             child: Text('Tambah'),
@@ -191,11 +256,11 @@ class _KaryawanMenuPageState extends State<KaryawanMenuPage> {
           ElevatedButton(
             onPressed: () async {
               final updatedMenu = {
-                'name': nameController.text,
-                'description': descriptionController.text,
-                'price': int.parse(priceController.text),
+                'nama_menu': nameController.text,
+                'deskripsi': descriptionController.text,
+                'harga': int.parse(priceController.text),
                 'image': imageController.text,
-                'stock': int.parse(stockController.text),
+                'stok': int.parse(stockController.text),
                 'id_kantin': int.parse(idKantinController.text),
               };
               try {
@@ -301,12 +366,12 @@ class _KaryawanMenuPageState extends State<KaryawanMenuPage> {
                         ],
                         rows: menus.map((menu) {
                           return DataRow(cells: [
-                            DataCell(Text(menu['name'])),
-                            DataCell(Text(menu['description'])),
-                            DataCell(Text(menu['harga'])),
-                            DataCell(Text(menu['image'])),
-                            DataCell(Text(menu['stok'])),
-                            DataCell(Text(menu['id_kantin'])),
+                            DataCell(Text('${menu['nama_menu']}')),
+                            DataCell(Text('${menu['deskripsi']}')),
+                            DataCell(Text('${menu['harga']}')),
+                            DataCell(Text('${menu['image']}')),
+                            DataCell(Text('${menu['stok']}')),
+                            DataCell(Text('${menu['id_kantin']}')),
                             DataCell(
                               Row(
                                 children: [
@@ -316,7 +381,7 @@ class _KaryawanMenuPageState extends State<KaryawanMenuPage> {
                                   ),
                                   IconButton(
                                     icon: Icon(Icons.delete, color: Colors.red),
-                                    onPressed: () => deleteMenu(menu['id']),
+                                    onPressed: () {showDeleteModal(context, menu['id']);},
                                   ),
                                 ],
                               ),

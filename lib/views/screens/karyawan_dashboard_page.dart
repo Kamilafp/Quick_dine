@@ -7,6 +7,7 @@ import 'package:quick_dine/services/pesanan_service.dart';
 import 'package:quick_dine/views/screens/karyawan_pesanan_page.dart';
 import 'package:quick_dine/views/screens/karyawan_menu_page.dart';
 import 'package:quick_dine/views/screens/karyawan_detail_pesanan_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class KaryawanDashboardPage extends StatefulWidget {
   @override
@@ -16,23 +17,41 @@ class KaryawanDashboardPage extends StatefulWidget {
 class _KaryawanDashboardPageState extends State<KaryawanDashboardPage> {
   int totalMenu = 0;
   int totalPesanan = 0;
-  int totalDetailPesanan = 0;
+  // int totalDetailPesanan = 0;
   bool isLoading = true;
+  int? idKantin;
 
   @override
   void initState() {
     super.initState();
-    fetchData();
+    _getIdKantin();
+  }
+
+  Future<void> _getIdKantin() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      idKantin = pref.getInt('id_kantin');  // Ambil id_kantin
+    });
+    if (idKantin != null) {
+      fetchData();  // Hanya panggil fetchData jika id_kantin tersedia
+    }
   }
 
   Future<void> fetchData() async {
-    try {
-      totalMenu = await getTotalMenu();
-      totalPesanan = await getTotalPesanan();
-      totalDetailPesanan = await getTotalDetailPesanan();
+    if (idKantin == null) {
       setState(() {
-        isLoading=false;
-    });
+        isLoading = false;
+      });
+      return;
+    }
+
+    try {
+      totalMenu = await getTotalMenu(idKantin!);  // Mengambil data berdasarkan id_kantin
+      totalPesanan = await getTotalPesanan(idKantin!);
+      // totalDetailPesanan = await getTotalDetailPesanan(idKantin!);
+      setState(() {
+        isLoading = false;
+      });
     } catch (e) {
       print(e);
       setState(() {
@@ -67,90 +86,84 @@ class _KaryawanDashboardPageState extends State<KaryawanDashboardPage> {
               leading: Icon(Icons.dashboard),
               title: Text('Dashboard'),
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => KaryawanDashboardPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => KaryawanDashboardPage()));
               },
             ),
             ListTile(
               leading: Icon(Icons.restaurant_menu),
               title: Text('Menu'),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => KaryawanMenuPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => KaryawanMenuPage()));
               },
             ),
             ListTile(
               leading: Icon(Icons.receipt),
               title: Text('Pesanan'),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => KaryawanPesananPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => KaryawanPesananPage()));
               },
             ),
-            ListTile(
-              leading: Icon(Icons.list_alt),
-              title: Text('Detail Pesanan'),
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => KaryawanDetailPesananPage()));
-              },
-            ),
+            // ListTile(
+            //   leading: Icon(Icons.list_alt),
+            //   title: Text('Detail Pesanan'),
+            //   onTap: () {
+            //     Navigator.push(context,
+            //         MaterialPageRoute(builder: (context) => KaryawanDetailPesananPage()));
+            //   },
+            // ),
           ],
         ),
       ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildCard(
-                        title: 'Jumlah Menu',
-                        count: totalMenu.toString(),
-                        color: Colors.blueAccent,
-                      ),
-                      _buildCard(
-                        title: 'Jumlah Pesanan',
-                        count: totalPesanan.toString(),
-                        color: Colors.orangeAccent,
-                      ),
-                      _buildCard(
-                        title: 'Detail Pesanan',
-                        count: totalDetailPesanan.toString(),
-                        color: Colors.greenAccent,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildCard(title: 'Jumlah Menu', count: totalMenu.toString()),
+            SizedBox(height: 16),
+            _buildCard(title: 'Jumlah Pesanan', count: totalPesanan.toString()),
+            // SizedBox(height: 16),
+            // _buildCard(title: 'Detail Pesanan', count: totalDetailPesanan.toString()),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildCard({required String title, required String count, required Color color}) {
+  // Fungsi untuk membuat card yang serupa dengan AdminDashboard
+  Widget _buildCard({required String title, required String count}) {
     return Card(
-      color: color,
-      elevation: 5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Container(
-        width: 150,
-        height: 120,
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      color: Color(0xFFF8F4FF), // Warna ungu muda
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               title,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 8),
             Text(
               count,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.green,
+              ),
             ),
           ],
         ),

@@ -58,6 +58,9 @@ class _LoginModalState extends State<LoginModal> {
     await pref.setString('token', user.token ?? '');
     await pref.setInt('idUser', user.id ?? 0);
     await pref.setString('role', user.role ?? '');
+    if (user.role == 'karyawan') {
+      await pref.setInt('id_kantin', user.idKantin ?? 0); // Make sure idKantin is correctly mapped
+    }
 
     if (user.role == 'admin') {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
