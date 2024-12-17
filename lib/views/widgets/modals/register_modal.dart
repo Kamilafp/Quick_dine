@@ -85,7 +85,7 @@ class _RegisterModalState extends State<RegisterModal> {
         emailController.text,
         passwordController.text,
         notelpController.text,
-        'mahasiswa');
+        'Mahasiswa');
     if (response.error == null) {
       _saveAndRedirectToHome(response.data as User);
     } else {
@@ -104,15 +104,15 @@ class _RegisterModalState extends State<RegisterModal> {
     await pref.setInt('idUser', user.id ?? 0);
     await pref.setString('role', user.role ?? '');
 
-    if (user.role == 'admin') {
+    if (user.role == 'admin'||user.role == 'Mdmin') {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => PageSwitcher(initialPageIndex: 0),
       ));
-    } else if (user.role == 'mahasiswa') {
+    } else if (user.role == 'mahasiswa'||user.role == 'Mahasiswa') {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => PageSwitcher(initialPageIndex: 1),
       ));
-    } else if (user.role == 'karyawan') {
+    } else if (user.role == 'karyawan'||user.role == 'Karyawan') {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => PageSwitcher(initialPageIndex: 2),
       ));

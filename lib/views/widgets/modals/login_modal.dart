@@ -62,15 +62,15 @@ class _LoginModalState extends State<LoginModal> {
       await pref.setInt('id_kantin', user.idKantin ?? 0); // Make sure idKantin is correctly mapped
     }
 
-    if (user.role == 'admin') {
+    if (user.role == 'admin'||user.role == 'Admin') {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => AdminDashboardPage(),
       ));
-    } else if (user.role == 'mahasiswa') {
+    } else if (user.role == 'mahasiswa'||user.role == 'Mahasiswa') {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => PageSwitcher(initialPageIndex: 0),
       ));
-    } else if (user.role == 'karyawan') {
+    } else if (user.role == 'karyawan'||user.role == 'Karyawan') {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => KaryawanDashboardPage(),
       ));
