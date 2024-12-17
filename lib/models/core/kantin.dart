@@ -2,7 +2,7 @@ class Kantin {
   final int id;
   final String namaKantin;
   final int idKaryawan;
-  final String namaKaryawan;
+  final String? namaKaryawan;
   final String metodePembayaran;
   final String noTelp;
 
@@ -10,7 +10,7 @@ class Kantin {
     required this.id,
     required this.namaKantin,
     required this.idKaryawan,
-    required this.namaKaryawan,
+    this.namaKaryawan,
     required this.metodePembayaran,
     required this.noTelp,
   });

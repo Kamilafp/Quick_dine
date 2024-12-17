@@ -379,7 +379,7 @@ class _AdminAkunPageState extends State<AdminAkunPage> {
             ),
             ListTile(
               leading: Icon(Icons.exit_to_app_outlined, color:Colors.red),
-              title: Text('Kantin'),
+              title: Text('Logout',style: TextStyle(color: (Colors.red))),
               onTap: (){
             logout().then((value) => {
                     Navigator.of(context).pushAndRemoveUntil(

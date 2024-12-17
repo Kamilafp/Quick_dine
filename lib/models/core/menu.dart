@@ -1,20 +1,20 @@
 import 'package:quick_dine/constant.dart';
 
 class Menu {
-  String id;
-  String idKantin;
-  String nama;
-  int? harga;
-  int? stok;
-  String? deskripsi;
-  String? image;
+  final int id;
+  final int idKantin;
+  final String nama;
+  final int harga;
+  final int stok;
+  final String? deskripsi;
+  final String? image;
 
   Menu({
     required this.id,
     required this.idKantin,
     required this.nama,
-    this.harga,
-    this.stok,
+    required this.harga,
+    required this.stok,
     this.deskripsi,
     this.image,
   });
@@ -24,10 +24,11 @@ class Menu {
       id: json['id'],
       idKantin: json['id_kantin'],
       nama: json['nama_menu'],
-      harga: (json['harga'] as num?)?.toInt(),
-      stok: (json['stok'] as num?)?.toInt(),
+      harga: json['harga'],
+      stok: json['stok'],
       deskripsi: json['deskripsi'] ?? '',
-      image: json['image'] != null ? '$baseURL/storage/${json['image']}' : null,
+      // image: json['image'] != null ? '$baseURL/storage/${json['image']}' : null,
+      image: json['image']??'',
     );
   }
 

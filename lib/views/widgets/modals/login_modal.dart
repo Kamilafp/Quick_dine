@@ -3,6 +3,7 @@ import 'package:quick_dine/models/api_response.dart';
 import 'package:quick_dine/models/core/user.dart';
 import 'package:quick_dine/services/user_service.dart';
 import 'package:quick_dine/views/screens/admin_dashboard_page.dart';
+import 'package:quick_dine/views/screens/home_page.dart';
 import 'package:quick_dine/views/screens/karyawan_dashboard_page.dart';
 import 'package:quick_dine/views/screens/page_switcher.dart';
 import 'package:quick_dine/views/utils/AppColor.dart';
@@ -67,9 +68,9 @@ class _LoginModalState extends State<LoginModal> {
         builder: (context) => AdminDashboardPage(),
       ));
     } else if (user.role == 'mahasiswa'||user.role == 'Mahasiswa') {
-      // Navigator.of(context).pushReplacement(MaterialPageRoute(
-      //   builder: (context) => PageSwitcher(initialPageIndex: 0),
-      // ));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => HomePage()
+      ));
     } else if (user.role == 'karyawan'||user.role == 'Karyawan') {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => KaryawanDashboardPage(),

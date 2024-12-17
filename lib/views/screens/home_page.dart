@@ -1,59 +1,74 @@
-// import 'package:flutter/material.dart';
-// import 'package:quick_dine/models/core/kantin.dart';
-// import 'package:quick_dine/views/screens/profile_page.dart';
-// import 'package:quick_dine/views/screens/ruko_list_page.dart';
-// import 'package:quick_dine/views/utils/AppColor.dart';
-// import 'package:quick_dine/views/widgets/custom_app_bar.dart';
-// import 'package:quick_dine/views/widgets/featured_ruko_card.dart';
-// class HomePage extends StatefulWidget {
-//   @override
-//   _HomePageState createState() => _HomePageState();
-// }
+import 'package:flutter/material.dart';
+import 'package:quick_dine/models/core/kantin.dart';
+import 'package:quick_dine/services/kantin_service.dart';
+import 'package:quick_dine/views/screens/featured_kantin_card.dart';
+import 'package:quick_dine/views/screens/menu_list_page.dart';
+import 'package:quick_dine/views/screens/profile_page.dart';
+import 'package:quick_dine/views/screens/ruko_list_page.dart';
+import 'package:quick_dine/views/utils/AppColor.dart';
+import 'package:quick_dine/views/widgets/custom_app_bar.dart';
+import 'package:quick_dine/views/widgets/modals/kantin_card.dart';
 
-// class _HomePageState extends State<HomePage> {
-//   List<Map<String, dynamic>> kantins = [];
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
 
-//   bool isLoading = true;
+class _HomePageState extends State<HomePage> {
+  // List<Kantin> kantins = [];
+  List<Map<String, dynamic>> kantins = [];
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     fetchKantins();
-//   }
-//   Future<void> fetchKantins() async {
-//     try {
-//       final data = await fetchKantins();
-//       setState(() {
-//         kantins = data;
-//         isLoading = false;
-//       });
-//     } catch (e) {
-//       print(e);
-//       setState(() {
-//         isLoading = false;
-//       });
-//     }
-//   }
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: PreferredSize(
-//         preferredSize: Size.fromHeight(70),
-//         child: CustomAppBar(
-//           title: Text(
-//             'QuickDine',
-//             style: TextStyle(color: Colors.white, fontFamily: 'inter', fontWeight: FontWeight.w700),
-//           ),
-//           showProfilePhoto: true,
-//           profilePhoto: AssetImage('assets/images/profile.jfif'),
-//           profilePhotoOnPressed: () {
-//             Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProfilePage()));
-//           },
-//         ),
-//       ),
-//       body: isLoading
-//       ? Center(child: CircularProgressIndicator())
-//       :ListView(
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchKantins();
+  }
+
+  Future<void> fetchKantins() async {
+    try {
+      final data = await fetchKantin(); // Mengambil data kantin
+        setState(() {
+          kantins = data; // Menyimpan data kantin
+          isLoading = false;
+        });
+      
+    } catch (e) {
+      print(e);
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+  void navigateToMenuList(int idKantin) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MenuListPage(idKantin: idKantin)),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(70),
+        child: CustomAppBar(
+          title: Text(
+            'QuickDine',
+            style: TextStyle(color: Colors.white, fontFamily: 'inter', fontWeight: FontWeight.w700),
+          ),
+          showProfilePhoto: true,
+          profilePhoto: AssetImage('assets/images/profile.jfif'),
+          profilePhotoOnPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProfilePage()));
+          },
+        ),
+      ),
+      body: isLoading
+      ? Center(child: CircularProgressIndicator())
+      : 
+//       ListView(
 //         shrinkWrap: true,
 //         physics: BouncingScrollPhysics(),
 //         children: [
@@ -87,27 +102,29 @@
 //                     ],
 //                   ),
 //                 ),
-//                 // Featured Ruko - ListView
+//                 // Featured Kantin - ListView
 //                 Container(
 //                   margin: EdgeInsets.only(top: 4),
 //                   height: 220,
-//                   child: ListView.separated(
+//                   child: 
+//                   // ListView.separated(
 //                     // itemCount: featuredRuko.length,
-//                     itemCount: kantins.length,
-//                     padding: EdgeInsets.symmetric(horizontal: 16),
-//                     physics: BouncingScrollPhysics(),
-//                     shrinkWrap: true,
-//                     scrollDirection: Axis.horizontal,
-//                     separatorBuilder: (context, index) {
-//                       return SizedBox(
-//                         width: 16,
-//                       );
-//                     },
-//                     itemBuilder: (context, index) {
+//                     // itemCount: kantins.length,
+//                     // padding: EdgeInsets.symmetric(horizontal: 16),
+//                     // physics: BouncingScrollPhysics(),
+//                     // shrinkWrap: true,
+//                     // scrollDirection: Axis.horizontal,
+//                     // separatorBuilder: (context, index) {
+//                     //   return SizedBox(
+//                     //     width: 16,
+//                     //   );
+//                     // },
+//                     ListView.builder(
+//                       itemCount: kantins.length,
+//                       itemBuilder: (context, index) {
 //                       // return FeaturedRukoCard(data: featuredRuko[index]);
 //                       final kantin = kantins[index];
-//                       return FeaturedRukoCard(data: Kantin);
-//                       id: kantin['id']
+//                       return KantinCard(kantin: kantin);
 //                     },
 //                   ),
 //                 ),
@@ -119,3 +136,41 @@
 //     );
 //   }
 // }
+
+Padding(padding: const EdgeInsets.all(16.0),
+child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, // Jumlah kolom
+                  crossAxisSpacing: 16.0,
+                  mainAxisSpacing: 16.0,
+                ),
+                itemCount: kantins.length,
+                itemBuilder: (context, index) {
+                  final kantin = kantins[index];
+                  return GestureDetector(
+                    onTap: () => navigateToMenuList(kantin['id']),
+                    child: Card(
+                      elevation: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              kantin['nama_kantin'],
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                            ),
+                            SizedBox(height: 8),
+                            Text('Metode Pembayaran: ${kantin['metode_pembayaran']}'),
+                            Text('No Telepon: ${kantin['no_telp']}'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+    );
+  }
+}
