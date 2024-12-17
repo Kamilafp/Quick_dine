@@ -4,9 +4,9 @@ import 'package:quick_dine/models/helper/menu_helper.dart';
 import 'package:quick_dine/views/widgets/featured_menu_card.dart';
 
 class MenuListPage extends StatefulWidget {
-  final String idRuko;
+  final String idKantin;
 
-  MenuListPage({required this.idRuko});
+  MenuListPage({required this.idKantin});
 
   @override
   _MenuListPageState createState() => _MenuListPageState();
@@ -50,7 +50,7 @@ class _MenuListPageState extends State<MenuListPage> {
                 final menu = entry.key;
                 final quantity = entry.value;
                 return ListTile(
-                  title: Text(menu.nama),
+                  title: Text(menu.namaMenu),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -64,7 +64,7 @@ class _MenuListPageState extends State<MenuListPage> {
               Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  'Total: Rp ${orderDetails.entries.fold<int>(0, (sum, entry) => sum + ((entry.key.harga.toInt() ?? 0) * (entry.value ?? 0)))}',
+                  'Total: Rp ${orderDetails.entries.fold<int>(0, (sum, entry) => sum + ((entry.key.harga?? 0) * (entry.value ?? 0)))}',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -77,7 +77,7 @@ class _MenuListPageState extends State<MenuListPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<Menu> menuList = MenuHelper.getMenuByRukoId(int.parse(widget.idRuko));
+    List<Menu> menuList = Menu.getMenuByKantinId(int.parse(widget.idKantin));
 
     return Scaffold(
       appBar: AppBar(
@@ -89,7 +89,7 @@ class _MenuListPageState extends State<MenuListPage> {
           Expanded(
             child: menuList.isEmpty
                 ? Center(
-                    child: Text('Belum ada menu untuk ruko ini.'),
+                    child: Text('Belum ada menu untuk kantin ini.'),
                   )
                 : ListView.builder(
                     itemCount: menuList.length,

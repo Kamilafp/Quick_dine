@@ -1,50 +1,55 @@
 class Menu {
   String id;
-  String idRuko;
+  String idKantin;
   String nama;
-  double harga;
-  String deskripsi;
-  String foto;
+  int? harga;
+  int? stok;
+  String? deskripsi;
+  String? image;
 
   Menu({
     required this.id,
-    required this.idRuko,
+    required this.idKantin,
     required this.nama,
-    required this.harga,
-    required this.deskripsi,
-    required this.foto,
+    this.harga,
+    this.stok,
+    this.deskripsi,
+    this.image,
   });
 
   factory Menu.fromJson(Map<String, dynamic> json) {
     return Menu(
-      id: json['id'] ?? '',
-      idRuko: json['idRuko'] ?? '',
-      nama: json['nama'] ?? '',
-      harga: (json['harga'] ?? 0).toDouble(),
+      id: json['id'],
+      idKantin: json['id_kantin'],
+      nama: json['nama_menu'],
+      harga: (json['harga']),
+      stok: (json['stok']),
       deskripsi: json['deskripsi'] ?? '',
-      foto: json['foto'] ?? '',
+      image: json['image'] ?? '',
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'idRuko': idRuko,
-      'nama': nama,
+      'id_kantin': idKantin,
+      'nama_menu': nama,
+      'stok': stok,
       'harga': harga,
       'deskripsi': deskripsi,
-      'foto': foto,
+      'image': image,
     };
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'idRuko': idRuko,
-      'nama': nama,
+      'id_kantin': idKantin,
+      'nama_menu': nama,
+      'stok': stok,
       'harga': harga,
       'deskripsi': deskripsi,
-      'foto': foto,
+      'image': image,
     };
   }
 }
