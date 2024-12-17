@@ -84,7 +84,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             ),
             ListTile(
               leading: Icon(Icons.exit_to_app_outlined, color:Colors.red),
-              title: Text('Kantin'),
+              title: Text('Logout'),
               onTap: (){
             logout().then((value) => {
                     Navigator.of(context).pushAndRemoveUntil(
