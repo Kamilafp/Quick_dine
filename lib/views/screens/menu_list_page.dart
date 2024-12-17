@@ -2,20 +2,20 @@
 // import 'package:quick_dine/models/core/menu.dart';
 // import 'package:quick_dine/models/helper/menu_helper.dart';
 // import 'package:quick_dine/views/widgets/featured_menu_card.dart';
-//
+
 // class MenuListPage extends StatefulWidget {
 //   final String idKantin;
-//
+
 //   MenuListPage({required this.idKantin});
-//
+
 //   @override
 //   _MenuListPageState createState() => _MenuListPageState();
 // }
-//
+
 // class _MenuListPageState extends State<MenuListPage> {
 //   int totalOrders = 0;
 //   Map<Menu, int> orderDetails = {}; // Menyimpan menu dan jumlah pesanannya
-//
+
 //   void updateOrder(Menu menu, int change) {
 //     setState(() {
 //       totalOrders += change;
@@ -24,13 +24,11 @@
 //         (value) => value + change,
 //         ifAbsent: () => change,
 //       );
-//
 //       if (orderDetails[menu] == 0) {
 //         orderDetails.remove(menu); // Hapus menu dari daftar jika jumlahnya 0
 //       }
 //     });
 //   }
-//
 //   void showOrderDetails() {
 //     showModalBottomSheet(
 //       context: context,
@@ -74,11 +72,11 @@
 //       },
 //     );
 //   }
-//
+
 //   @override
 //   Widget build(BuildContext context) {
 //     List<Menu> menuList = Menu.getMenuByKantinId(int.parse(widget.idKantin));
-//
+
 //     return Scaffold(
 //       appBar: AppBar(
 //         title: Text('Daftar Menu'),

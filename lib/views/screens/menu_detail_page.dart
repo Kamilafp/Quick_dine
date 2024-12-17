@@ -1,33 +1,31 @@
 // import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 // import 'package:quick_dine/models/core/menu.dart';
-//
+
 // class MenuDetailPage extends StatefulWidget {
 //   final Menu data;
 //   MenuDetailPage({required this.data});
-//
+
 //   @override
 //   _MenuDetailPageState createState() => _MenuDetailPageState();
 // }
-//
+
 // class _MenuDetailPageState extends State<MenuDetailPage> with TickerProviderStateMixin {
 //   late TabController _tabController;
 //   late ScrollController _scrollController;
-//
+
 //   @override
 //   void initState() {
 //     super.initState();
 //     _tabController = TabController(length: 3, vsync: this);
 //     _scrollController = ScrollController();
 //   }
-//
 //   @override
 //   void dispose() {
 //     _tabController.dispose();
 //     _scrollController.dispose();
 //     super.dispose();
 //   }
-//
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(

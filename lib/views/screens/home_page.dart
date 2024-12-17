@@ -5,23 +5,21 @@
 // import 'package:quick_dine/views/utils/AppColor.dart';
 // import 'package:quick_dine/views/widgets/custom_app_bar.dart';
 // import 'package:quick_dine/views/widgets/featured_ruko_card.dart';
-//
 // class HomePage extends StatefulWidget {
 //   @override
 //   _HomePageState createState() => _HomePageState();
 // }
-//
+
 // class _HomePageState extends State<HomePage> {
 //   List<Map<String, dynamic>> kantins = [];
-//
+
 //   bool isLoading = true;
-//
+
 //   @override
 //   void initState() {
 //     super.initState();
 //     fetchKantins();
 //   }
-//
 //   Future<void> fetchKantins() async {
 //     try {
 //       final data = await fetchKantins();
@@ -36,7 +34,6 @@
 //       });
 //     }
 //   }
-//
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(

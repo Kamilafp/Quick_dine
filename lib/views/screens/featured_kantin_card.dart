@@ -8,6 +8,12 @@
 //
 //   FeaturedKantinCard({required this.data});
 //
+
+// class FeaturedKantinCard extends StatelessWidget {
+//   final Kantin data; // Data Kantin yang akan ditampilkan
+
+//   FeaturedKantinCard({required this.data});
+
 //   @override
 //   Widget build(BuildContext context) {
 //     return GestureDetector(
@@ -29,9 +35,9 @@
 //           //   fit: BoxFit.cover, // Mengatur agar gambar sesuai dengan ukuran card
 //           color: Colors.blue
 //           ),
-//
+        
 //         // Informasi Ruko
-//
+        
 //               child: Column(
 //                 crossAxisAlignment: CrossAxisAlignment.start,
 //                 children: [

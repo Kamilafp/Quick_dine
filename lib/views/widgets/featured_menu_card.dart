@@ -1,26 +1,25 @@
 // import 'package:flutter/material.dart';
 // import 'package:quick_dine/models/core/menu.dart';
-//
+
 // class FeaturedMenuCard extends StatefulWidget {
 //   final Menu data;
 //   final Function(int) onUpdateOrder; // Callback untuk memperbarui jumlah pesanan
-//
+
 //   FeaturedMenuCard({required this.data, required this.onUpdateOrder});
-//
+
 //   @override
 //   _FeaturedMenuCardState createState() => _FeaturedMenuCardState();
 // }
-//
+
 // class _FeaturedMenuCardState extends State<FeaturedMenuCard> {
 //   int quantity = 0;
-//
+
 //   void updateQuantity(int change) {
 //     setState(() {
 //       quantity += change;
 //     });
 //     widget.onUpdateOrder(change); // Update total pesanan di halaman utama
 //   }
-//
 //   @override
 //   Widget build(BuildContext context) {
 //     return Card(

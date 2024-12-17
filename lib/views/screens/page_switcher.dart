@@ -6,31 +6,31 @@
 // import 'package:quick_dine/views/screens/karyawan_dashboard_page.dart';
 // import 'package:quick_dine/views/utils/AppColor.dart';
 // import 'package:quick_dine/views/widgets/custom_bottom_navigation_bar.dart';
-//
+
 // class PageSwitcher extends StatefulWidget {
 //   final int initialPageIndex;
-//
+
 //   PageSwitcher({this.initialPageIndex = 0});
-//
+  
 //   @override
 //   _PageSwitcherState createState() => _PageSwitcherState();
 // }
-//
+
 // class _PageSwitcherState extends State<PageSwitcher> {
 //   int _selectedIndex = 0;
-//
+
 //   @override
 //   void initState() {
 //     super.initState();
 //     _selectedIndex = widget.initialPageIndex;
 //   }
-//
+
 //   _onItemTapped(int index) {
 //     setState(() {
 //       _selectedIndex = index;
 //     });
 //   }
-//
+
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
@@ -38,7 +38,7 @@
 //       body: Stack(
 //         children: [
 //           [
-//             HomePage(),
+//             // HomePage(),
 //             BookmarksPage(),
 //           ][_selectedIndex],
 //           BottomGradientWidget(),
@@ -48,7 +48,7 @@
 //     );
 //   }
 // }
-//
+
 // class BottomGradientWidget extends StatelessWidget {
 //   @override
 //   Widget build(BuildContext context) {

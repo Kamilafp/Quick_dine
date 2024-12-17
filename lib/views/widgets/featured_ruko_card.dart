@@ -2,12 +2,12 @@
 // import 'package:flutter/material.dart';
 // import 'package:quick_dine/views/screens/menu_list_page.dart'; // Import halaman MenuListPage
 // import 'package:quick_dine/models/core/ruko.dart'; // Model Ruko
-//
+
 // class FeaturedRukoCard extends StatelessWidget {
 //   final Ruko data; // Data ruko yang akan ditampilkan
-//
+
 //   FeaturedRukoCard({required this.data});
-//
+
 //   @override
 //   Widget build(BuildContext context) {
 //     return GestureDetector(
