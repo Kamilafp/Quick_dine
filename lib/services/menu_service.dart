@@ -6,12 +6,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:quick_dine/models/api_response.dart';
 import 'package:quick_dine/models/core/menu.dart';
 import 'package:quick_dine/constant.dart';
+import 'package:quick_dine/services/user_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<String> getToken() async {
-  SharedPreferences pref = await SharedPreferences.getInstance();
-  return pref.getString('token') ?? '';
-}
+
 
 
 Future<ApiResponse> getAllMenu(int idKantin) async {

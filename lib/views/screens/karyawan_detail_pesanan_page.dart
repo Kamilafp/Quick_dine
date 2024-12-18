@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:quick_dine/services/user_service.dart';
+import 'package:quick_dine/views/screens/auth/welcome_page.dart';
 import 'package:quick_dine/views/screens/karyawan_pesanan_page.dart';
 import 'package:quick_dine/views/screens/karyawan_menu_page.dart';
 import 'package:quick_dine/views/screens/karyawan_dashboard_page.dart';
@@ -94,6 +96,17 @@ class _KaryawanDetailPesananPageState extends State<KaryawanDetailPesananPage> {
                 );
               },
             ),
+            ListTile(
+              leading: Icon(Icons.exit_to_app_outlined, color:Colors.red),
+              title: Text('Logout', style: TextStyle(color: (Colors.red))),
+              onTap: (){
+            logout().then((value) => {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => WelcomePage()),
+                            (route) => false)
+                  });
+              }
+            )
           ],
         ),
       ),

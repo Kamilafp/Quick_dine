@@ -349,7 +349,7 @@ class _AdminKantinPageState extends State<AdminKantinPage> {
             ),
             ListTile(
               leading: Icon(Icons.exit_to_app_outlined, color:Colors.red),
-              title: Text('Kantin'),
+              title: Text('Logout',style: TextStyle(color: (Colors.red))),
               onTap: (){
             logout().then((value) => {
                     Navigator.of(context).pushAndRemoveUntil(
